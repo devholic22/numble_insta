@@ -40,3 +40,24 @@ jobs: # 이벤트가 발생했을 때 독립된 환경에서 실행되어야 하
       - name: Show Current Time
         run: echo "CurrentTime=$" 
         shell: bash # (9).확보한 시간 보여주기
+        
+# 새로 추가된 코드 (배포)
+      - name: Generate deployment package
+        run: |
+          mkdir -p deploy
+          cp build/libs/*.jar deploy/application.jar
+          cp Procfile deploy/Procfile
+          cp -r .ebextensions deploy/.ebextensions
+          cp -r .platform deploy/.platform
+          cd deploy && zip -r deploy.zip .
+
+      - name: Beanstalk Deploy
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: numble_instagram
+          environment_name: Instagram-env
+          version_label: github-action-${{steps.current-time.outputs.formattedTime}}
+          region: ap-northeast-2
+          deployment_package: deploy/deploy.zip
