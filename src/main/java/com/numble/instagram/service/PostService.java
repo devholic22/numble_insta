@@ -26,4 +26,11 @@ public class PostService {
                 .build();
         return postRepository.save(newPost);
     }
+
+    public Post edit(Post post, PostDto postDto) {
+        post.setContent(postDto.getContent());
+        post.setImage_url(postDto.getImage_url());
+
+        return post;
+    }
 }
