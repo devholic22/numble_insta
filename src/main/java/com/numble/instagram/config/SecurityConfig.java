@@ -67,7 +67,7 @@ public class SecurityConfig {
                 .requestMatchers("/**").permitAll()
                 .requestMatchers("/signup").permitAll()
                 .requestMatchers("/login").permitAll()
-                .requestMatchers("/profile").permitAll()
+                .requestMatchers("/profile").hasRole("USER")
                 .requestMatchers("/post").hasRole("USER")
                 .requestMatchers("/user/{username}").hasRole("ADMIN")
                 .anyRequest().authenticated()
