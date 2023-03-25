@@ -26,6 +26,9 @@ public class User {
     @Column(name = "nickname", length = 50)
     private String nickname;
 
+    @Column(name = "profile_image")
+    private String profile_image;
+
     @JsonIgnore
     @Column(name = "activated")
     private boolean activated;

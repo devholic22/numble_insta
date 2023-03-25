@@ -51,6 +51,7 @@ public class UserService {
         User user = User.builder()
                 .password(passwordEncoder.encode(userDto.getPassword()))
                 .nickname(userDto.getNickname())
+                .profile_image(userDto.getProfile_image())
                 .authorities(Collections.singleton(authority))
                 .activated(true)
                 .build();
