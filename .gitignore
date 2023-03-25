@@ -39,3 +39,4 @@ out/
 
 ### MAC ###
 .DS_Store
+*.sql
