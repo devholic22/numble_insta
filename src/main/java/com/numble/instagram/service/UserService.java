@@ -1,5 +1,6 @@
 package com.numble.instagram.service;
 
+import com.numble.instagram.dto.EditUserDto;
 import com.numble.instagram.dto.LoginDto;
 import com.numble.instagram.dto.TokenDto;
 import com.numble.instagram.dto.UserDto;
@@ -72,11 +73,24 @@ public class UserService {
         return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
     }
 
+    public User edit(EditUserDto editUserDto) {
+        User loggedInUser = getLoggedInUser();
+        loggedInUser.setNickname(editUserDto.getNickname());
+        loggedInUser.setProfile_image(editUserDto.getProfile_image());
+        return loggedInUser;
+    }
+
     public Optional<User> getUserWithAuthorities(String username) {
         return userRepository.findOneWithAuthoritiesByNickname(username);
     }
 
     public Optional<User> getMyUserWithAuthorities() {
         return SecurityUtil.getCurrentUsername().flatMap(userRepository::findOneWithAuthoritiesByNickname);
+    }
+
+    public User getLoggedInUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String nickname = authentication.getName();
+        return userRepository.findOneWithAuthoritiesByNickname(nickname).get();
     }
 }

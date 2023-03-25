@@ -1,5 +1,6 @@
 package com.numble.instagram.controller;
 
+import com.numble.instagram.dto.EditUserDto;
 import com.numble.instagram.dto.LoginDto;
 import com.numble.instagram.dto.TokenDto;
 import com.numble.instagram.dto.UserDto;
@@ -47,4 +48,10 @@ public class UserController {
     public ResponseEntity<User> getUserInfo(@PathVariable String username) {
         return ResponseEntity.ok(userService.getUserWithAuthorities(username).get());
     }
+
+    @PutMapping("/profile")
+    public ResponseEntity<User> editProfile(@RequestBody EditUserDto editUserDto) {
+        return ResponseEntity.ok(userService.edit(editUserDto));
+    }
+
 }
