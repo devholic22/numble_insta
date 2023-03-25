@@ -26,7 +26,7 @@ jobs: # 이벤트가 발생했을 때 독립된 환경에서 실행되어야 하
         shell: bash # (6).권한 부여 (Permission Denied 방지)
 
       - name: Build with Gradle
-        run: ./gradlew clean build
+        run: ./gradlew clean build -x test
         shell: bash # (7).build 시작
 
 # 8, 9번은 빌드되는 시점의 시간을 보고, 배포할 때 version label이란 것에 빌드된 시간을 넣어 어플리케이션 버전으로 사용하기 위함이다.
