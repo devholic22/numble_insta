@@ -24,4 +24,9 @@ public class Reply {
     @JsonIgnore
     @JoinColumn(name = "comment_id")
     private Comment comment;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "writer_id")
+    private User writer;
 }
