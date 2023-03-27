@@ -69,6 +69,7 @@ public class SecurityConfig {
                 .requestMatchers("/login").permitAll()
                 .requestMatchers("/profile").hasRole("USER")
                 .requestMatchers("/post").hasRole("USER")
+                .requestMatchers("/comment").hasRole("USER")
                 .requestMatchers("/user/{username}").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
