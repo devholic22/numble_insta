@@ -1,5 +1,6 @@
 package com.numble.instagram.controller;
 
+import com.numble.instagram.dto.DeleteReplyDto;
 import com.numble.instagram.dto.EditReplyDto;
 import com.numble.instagram.dto.ReplyDto;
 import com.numble.instagram.entity.User;
@@ -41,6 +42,19 @@ public class ReplyController {
         User loggedInUser = getLoggedInUser();
         try {
             return ResponseEntity.ok(replyService.edit(editReplyDto, loggedInUser));
+        } catch (RuntimeException e) {
+            ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(exceptionResponse);
+        }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> delete(@RequestBody DeleteReplyDto deleteReplyDto) {
+        User loggedInUser = getLoggedInUser();
+        try {
+            replyService.delete(deleteReplyDto, loggedInUser);
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (RuntimeException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

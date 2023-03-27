@@ -1,5 +1,6 @@
 package com.numble.instagram.service;
 
+import com.numble.instagram.dto.DeleteReplyDto;
 import com.numble.instagram.dto.EditReplyDto;
 import com.numble.instagram.dto.ReplyDto;
 import com.numble.instagram.entity.Comment;
@@ -48,5 +49,16 @@ public class ReplyService {
         }
         targetReply.get().setContent(editReplyDto.getContent());
         return targetReply.get();
+    }
+
+    public void delete(DeleteReplyDto deleteReplyDto, User loggedInUser) {
+        Optional<Reply> targetReply = replyRepository.findById(deleteReplyDto.getId());
+        if (targetReply.isEmpty()) {
+            throw new RuntimeException("해당 답글이 없습니다.");
+        }
+        if (!targetReply.get().getWriter().equals(loggedInUser)) {
+            throw new RuntimeException("삭제할 수 없습니다.");
+        }
+        replyRepository.deleteById(deleteReplyDto.getId());
     }
 }
