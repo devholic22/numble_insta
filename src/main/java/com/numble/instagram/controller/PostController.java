@@ -78,6 +78,6 @@ public class PostController {
     public User getLoggedInUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String nickname = authentication.getName();
-        return userRepository.findOneWithAuthoritiesByNickname(nickname).get();
+        return userRepository.findByNickname(nickname);
     }
 }
