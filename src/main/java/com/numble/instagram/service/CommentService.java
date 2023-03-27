@@ -50,4 +50,17 @@ public class CommentService {
         targetComment.get().setContent(editCommentDto.getContent());
         return targetComment.get();
     }
+
+    public void delete(Long commentId, User loggedInUser) {
+        Optional<Comment> targetComment = commentRepository.findById(commentId);
+        System.out.println(targetComment.isEmpty());
+        if (targetComment.isEmpty()) {
+            throw new RuntimeException("해당 댓글이 없습니다.");
+        }
+        User writer = targetComment.get().getWriter();
+        if (!writer.equals(loggedInUser)) {
+            throw new RuntimeException("삭제할 수 없습니다.");
+        }
+        commentRepository.deleteById(commentId);
+    }
 }
