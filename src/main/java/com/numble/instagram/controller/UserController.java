@@ -36,14 +36,15 @@ public class UserController {
         return userService.login(loginDto);
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<User> getMyUserInfo() {
-        return ResponseEntity.ok(userService.getMyUserWithAuthorities().get());
-    }
-
-    @GetMapping("/user/{username}")
-    public ResponseEntity<User> getUserInfo(@PathVariable String username) {
-        return ResponseEntity.ok(userService.getUserWithAuthorities(username).get());
+    @GetMapping("/profile/{user_id}")
+    public ResponseEntity<?> getUserInfo(@PathVariable Long user_id) {
+        try {
+            return ResponseEntity.ok(userService.getProfile(user_id));
+        } catch (RuntimeException e) {
+            ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(exceptionResponse);
+        }
     }
 
     @PutMapping("/profile")
@@ -54,7 +55,6 @@ public class UserController {
     @DeleteMapping("/profile")
     public ResponseEntity<?> deleteProfile(@RequestBody DeleteUserDto deleteUserDto) {
         try {
-            System.out.println("deleteProfile controller");
             userService.delete(deleteUserDto);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (RuntimeException e) {

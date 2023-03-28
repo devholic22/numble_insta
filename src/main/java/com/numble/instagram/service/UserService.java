@@ -5,6 +5,7 @@ import com.numble.instagram.entity.Authority;
 import com.numble.instagram.entity.User;
 import com.numble.instagram.jwt.JwtFilter;
 import com.numble.instagram.jwt.TokenProvider;
+import com.numble.instagram.repository.FollowRepository;
 import com.numble.instagram.repository.UserRepository;
 import com.numble.instagram.util.SecurityUtil;
 import org.springframework.http.HttpHeaders;
@@ -30,14 +31,17 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final FollowRepository followRepository;
 
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
-                       TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder) {
+                       TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder,
+                       FollowRepository followRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenProvider = tokenProvider;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
+        this.followRepository = followRepository;
     }
 
     public User signup(UserDto userDto) {
@@ -78,9 +82,23 @@ public class UserService {
         return loggedInUser;
     }
 
+    public UserInfoDto getProfile(Long user_id) {
+        Optional<User> targetUser = userRepository.findById(user_id);
+        if (targetUser.isEmpty()) {
+            throw new RuntimeException("존재하지 않는 유저입니다.");
+        }
+        Long follower = (long) followRepository.findAllByReceiver_id(targetUser.get().getId()).size();
+        Long following = (long) followRepository.findAllBySender_id(targetUser.get().getId()).size();
+        return UserInfoDto.builder().
+                nickname(targetUser.get().getNickname())
+                .profile_image_url(targetUser.get().getProfile_image())
+                .follower(follower)
+                .following(following)
+                .build();
+    }
+
     public void delete(DeleteUserDto deleteUserDto) {
         User loggedInUser = getLoggedInUser();
-        System.out.println("loggedInUser = " + loggedInUser.getNickname());
         Optional<User> targetUser = userRepository.findById(deleteUserDto.getUser_id());
         if (targetUser.isEmpty()) {
             throw new RuntimeException("존재하지 않는 유저입니다.");
