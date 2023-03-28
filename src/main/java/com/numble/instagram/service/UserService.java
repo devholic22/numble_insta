@@ -1,9 +1,6 @@
 package com.numble.instagram.service;
 
-import com.numble.instagram.dto.EditUserDto;
-import com.numble.instagram.dto.LoginDto;
-import com.numble.instagram.dto.TokenDto;
-import com.numble.instagram.dto.UserDto;
+import com.numble.instagram.dto.*;
 import com.numble.instagram.entity.Authority;
 import com.numble.instagram.entity.User;
 import com.numble.instagram.jwt.JwtFilter;
@@ -22,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
 
 @Service
@@ -78,6 +76,22 @@ public class UserService {
         loggedInUser.setNickname(editUserDto.getNickname());
         loggedInUser.setProfile_image(editUserDto.getProfile_image());
         return loggedInUser;
+    }
+
+    public void delete(DeleteUserDto deleteUserDto) {
+        User loggedInUser = getLoggedInUser();
+        System.out.println("loggedInUser = " + loggedInUser.getNickname());
+        Optional<User> targetUser = userRepository.findById(deleteUserDto.getUser_id());
+        if (targetUser.isEmpty()) {
+            throw new RuntimeException("존재하지 않는 유저입니다.");
+        }
+        if (!loggedInUser.equals(targetUser.get())) {
+            throw new RuntimeException("탈퇴할 권한이 없습니다.");
+        }
+        loggedInUser.setActivated(false);
+        loggedInUser.setProfile_image("default_image.png");
+        loggedInUser.setNickname("deleted_user");
+        loggedInUser.setAuthorities(new HashSet<>());
     }
 
     public Optional<User> getUserWithAuthorities(String username) {

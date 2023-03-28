@@ -1,9 +1,6 @@
 package com.numble.instagram.controller;
 
-import com.numble.instagram.dto.EditUserDto;
-import com.numble.instagram.dto.LoginDto;
-import com.numble.instagram.dto.TokenDto;
-import com.numble.instagram.dto.UserDto;
+import com.numble.instagram.dto.*;
 import com.numble.instagram.entity.User;
 import com.numble.instagram.exception.ExceptionResponse;
 import com.numble.instagram.service.UserService;
@@ -54,4 +51,16 @@ public class UserController {
         return ResponseEntity.ok(userService.edit(editUserDto));
     }
 
+    @DeleteMapping("/profile")
+    public ResponseEntity<?> deleteProfile(@RequestBody DeleteUserDto deleteUserDto) {
+        try {
+            System.out.println("deleteProfile controller");
+            userService.delete(deleteUserDto);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (RuntimeException e) {
+            ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(exceptionResponse);
+        }
+    }
 }
