@@ -1,4 +1,4 @@
-package com.numble.instagram.dto;
+package com.numble.instagram.dto.post;
 
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -8,8 +8,9 @@ import org.springframework.web.multipart.MultipartFile;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EditUserDto {
+public class PostDto {
 
-    private String nickname;
-    private MultipartFile profile_image;
+    private String content;
+
+    private MultipartFile image_url;
 }

@@ -1,7 +1,7 @@
 package com.numble.instagram.service;
 
-import com.numble.instagram.dto.CommentDto;
-import com.numble.instagram.dto.EditCommentDto;
+import com.numble.instagram.dto.comment.CommentDto;
+import com.numble.instagram.dto.comment.EditCommentDto;
 import com.numble.instagram.entity.Comment;
 import com.numble.instagram.entity.Post;
 import com.numble.instagram.entity.User;

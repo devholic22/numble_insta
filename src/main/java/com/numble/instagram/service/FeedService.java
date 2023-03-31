@@ -1,8 +1,8 @@
 package com.numble.instagram.service;
 
-import com.numble.instagram.dto.GetCommentDto;
-import com.numble.instagram.dto.GetFeedDto;
-import com.numble.instagram.dto.GetReplyDto;
+import com.numble.instagram.dto.comment.GetCommentDto;
+import com.numble.instagram.dto.feed.GetFeedDto;
+import com.numble.instagram.dto.reply.GetReplyDto;
 import com.numble.instagram.entity.Comment;
 import com.numble.instagram.entity.Post;
 import com.numble.instagram.entity.Reply;

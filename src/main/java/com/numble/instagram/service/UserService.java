@@ -1,6 +1,7 @@
 package com.numble.instagram.service;
 
-import com.numble.instagram.dto.*;
+import com.numble.instagram.dto.jwt.TokenDto;
+import com.numble.instagram.dto.user.*;
 import com.numble.instagram.entity.Authority;
 import com.numble.instagram.entity.User;
 import com.numble.instagram.jwt.JwtFilter;

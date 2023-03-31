@@ -1,5 +1,6 @@
-package com.numble.instagram.dto;
+package com.numble.instagram.dto.feed;
 
+import com.numble.instagram.dto.comment.GetCommentDto;
 import lombok.*;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.numble.instagram.dto;
+package com.numble.instagram.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

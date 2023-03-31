@@ -1,4 +1,4 @@
-package com.numble.instagram.dto;
+package com.numble.instagram.dto.reply;
 
 import lombok.*;
 
@@ -7,8 +7,8 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessageDto {
+public class ReplyDto {
 
-    private Long user_id;
+    private Long comment_id;
     private String content;
 }

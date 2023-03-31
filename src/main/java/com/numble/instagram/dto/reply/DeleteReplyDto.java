@@ -1,4 +1,4 @@
-package com.numble.instagram.dto;
+package com.numble.instagram.dto.reply;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeleteCommentDto {
+public class DeleteReplyDto {
 
     private Long id;
 }

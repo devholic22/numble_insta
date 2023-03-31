@@ -1,8 +1,8 @@
 package com.numble.instagram.service;
 
-import com.numble.instagram.dto.DeleteReplyDto;
-import com.numble.instagram.dto.EditReplyDto;
-import com.numble.instagram.dto.ReplyDto;
+import com.numble.instagram.dto.reply.DeleteReplyDto;
+import com.numble.instagram.dto.reply.EditReplyDto;
+import com.numble.instagram.dto.reply.ReplyDto;
 import com.numble.instagram.entity.Comment;
 import com.numble.instagram.entity.Reply;
 import com.numble.instagram.entity.User;

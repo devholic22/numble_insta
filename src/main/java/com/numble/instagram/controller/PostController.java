@@ -1,6 +1,6 @@
 package com.numble.instagram.controller;
 
-import com.numble.instagram.dto.PostDto;
+import com.numble.instagram.dto.post.PostDto;
 import com.numble.instagram.entity.Post;
 import com.numble.instagram.entity.User;
 import com.numble.instagram.exception.ExceptionResponse;
@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 

@@ -1,6 +1,6 @@
 package com.numble.instagram.service;
 
-import com.numble.instagram.dto.FollowDto;
+import com.numble.instagram.dto.follow.FollowDto;
 import com.numble.instagram.entity.Follow;
 import com.numble.instagram.entity.User;
 import com.numble.instagram.repository.FollowRepository;

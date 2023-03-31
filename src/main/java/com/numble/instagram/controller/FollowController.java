@@ -1,6 +1,6 @@
 package com.numble.instagram.controller;
 
-import com.numble.instagram.dto.FollowDto;
+import com.numble.instagram.dto.follow.FollowDto;
 import com.numble.instagram.exception.ExceptionResponse;
 import com.numble.instagram.service.FollowService;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
 package com.numble.instagram.controller;
 
-import com.numble.instagram.dto.MessageDto;
+import com.numble.instagram.dto.message.MessageDto;
 import com.numble.instagram.exception.ExceptionResponse;
 import com.numble.instagram.service.MessageService;
 import org.springframework.http.HttpStatus;

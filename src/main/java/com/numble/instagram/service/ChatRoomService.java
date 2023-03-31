@@ -1,8 +1,7 @@
 package com.numble.instagram.service;
 
-import com.numble.instagram.dto.GetMessageDto;
-import com.numble.instagram.dto.GetReplyDto;
-import com.numble.instagram.dto.GetRoomDto;
+import com.numble.instagram.dto.message.GetMessageDto;
+import com.numble.instagram.dto.room.GetRoomDto;
 import com.numble.instagram.entity.ChatRoom;
 import com.numble.instagram.entity.Message;
 import com.numble.instagram.entity.User;

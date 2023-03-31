@@ -1,8 +1,8 @@
 package com.numble.instagram.controller;
 
-import com.numble.instagram.dto.DeleteReplyDto;
-import com.numble.instagram.dto.EditReplyDto;
-import com.numble.instagram.dto.ReplyDto;
+import com.numble.instagram.dto.reply.DeleteReplyDto;
+import com.numble.instagram.dto.reply.EditReplyDto;
+import com.numble.instagram.dto.reply.ReplyDto;
 import com.numble.instagram.entity.User;
 import com.numble.instagram.exception.ExceptionResponse;
 import com.numble.instagram.repository.UserRepository;

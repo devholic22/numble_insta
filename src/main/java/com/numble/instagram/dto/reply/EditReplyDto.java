@@ -1,4 +1,4 @@
-package com.numble.instagram.dto;
+package com.numble.instagram.dto.reply;
 
 import lombok.*;
 
@@ -7,10 +7,8 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetReplyDto {
+public class EditReplyDto {
 
     private Long id;
     private String content;
-    private String nickname;
-    private String profile_image_url;
 }
