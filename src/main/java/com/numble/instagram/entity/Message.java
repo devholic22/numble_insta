@@ -31,6 +31,6 @@ public class Message {
     private User receiver;
 
     @ManyToOne
-    @JoinColumn(name = "room")
+    @JoinColumn(name = "room_id")
     private ChatRoom room;
 }
