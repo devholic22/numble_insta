@@ -1,6 +1,6 @@
 package com.numble.instagram.service;
 
-import com.numble.instagram.dto.MessageDto;
+import com.numble.instagram.dto.message.MessageDto;
 import com.numble.instagram.entity.ChatRoom;
 import com.numble.instagram.entity.Message;
 import com.numble.instagram.entity.User;
