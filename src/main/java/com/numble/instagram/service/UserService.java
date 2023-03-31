@@ -55,7 +55,7 @@ public class UserService {
         User user = User.builder()
                 .password(passwordEncoder.encode(userDto.getPassword()))
                 .nickname(userDto.getNickname())
-                .profile_image(userDto.getProfile_image())
+                .profile_image(userDto.getProfile_image().getOriginalFilename())
                 .authorities(Collections.singleton(authority))
                 .activated(true)
                 .build();
@@ -78,7 +78,7 @@ public class UserService {
     public User edit(EditUserDto editUserDto) {
         User loggedInUser = getLoggedInUser();
         loggedInUser.setNickname(editUserDto.getNickname());
-        loggedInUser.setProfile_image(editUserDto.getProfile_image());
+        loggedInUser.setProfile_image(editUserDto.getProfile_image().getOriginalFilename());
         return loggedInUser;
     }
 

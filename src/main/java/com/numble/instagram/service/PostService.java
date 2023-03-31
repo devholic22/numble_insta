@@ -6,6 +6,7 @@ import com.numble.instagram.entity.User;
 import com.numble.instagram.repository.PostRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -21,7 +22,7 @@ public class PostService {
 
         Post newPost = Post.builder()
                 .content(postDto.getContent())
-                .image_url(postDto.getImage_url())
+                .image_url(postDto.getImage_url().getOriginalFilename())
                 .writer(writer)
                 .build();
         return postRepository.save(newPost);
@@ -29,7 +30,7 @@ public class PostService {
 
     public Post edit(Post post, PostDto postDto) {
         post.setContent(postDto.getContent());
-        post.setImage_url(postDto.getImage_url());
+        post.setImage_url(postDto.getImage_url().getOriginalFilename());
 
         return post;
     }

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -32,7 +33,11 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<Post> write(@RequestBody PostDto postDto) {
+    // @RequestBody는 json
+    // @RequestParam은 주로 html form에서 사용
+    // @RequestPart는 파일 전송에 특화
+
+    public ResponseEntity<Post> write(@ModelAttribute PostDto postDto) {
         return ResponseEntity.ok(postService.write(postDto, getLoggedInUser()));
     }
 

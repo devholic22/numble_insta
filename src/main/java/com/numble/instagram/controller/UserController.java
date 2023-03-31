@@ -19,7 +19,7 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody UserDto userDto) {
+    public ResponseEntity<?> signup(@ModelAttribute UserDto userDto) {
         User newUser;
         try {
             newUser = userService.signup(userDto);
@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<User> editProfile(@RequestBody EditUserDto editUserDto) {
+    public ResponseEntity<User> editProfile(@ModelAttribute EditUserDto editUserDto) {
         return ResponseEntity.ok(userService.edit(editUserDto));
     }
 

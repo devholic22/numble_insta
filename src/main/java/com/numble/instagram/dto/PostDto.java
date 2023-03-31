@@ -1,7 +1,7 @@
 package com.numble.instagram.dto;
 
-import com.numble.instagram.entity.User;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -12,5 +12,5 @@ public class PostDto {
 
     private String content;
 
-    private String image_url;
+    private MultipartFile image_url;
 }

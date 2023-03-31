@@ -2,6 +2,7 @@ package com.numble.instagram.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -15,6 +16,6 @@ public class UserDto {
 
     private String nickname;
 
-    private String profile_image;
+    private MultipartFile profile_image;
 
 }
