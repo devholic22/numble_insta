@@ -4,6 +4,7 @@ import com.numble.instagram.dto.jwt.TokenDto;
 import com.numble.instagram.dto.user.*;
 import com.numble.instagram.entity.Authority;
 import com.numble.instagram.entity.User;
+import com.numble.instagram.exception.NotSearchedTargetException;
 import com.numble.instagram.jwt.JwtFilter;
 import com.numble.instagram.jwt.TokenProvider;
 import com.numble.instagram.repository.FollowRepository;
@@ -83,16 +84,17 @@ public class UserService {
         return loggedInUser;
     }
 
-    public UserInfoDto getProfile(Long user_id) {
-        Optional<User> targetUser = userRepository.findById(user_id);
-        if (targetUser.isEmpty()) {
-            throw new RuntimeException("존재하지 않는 유저입니다.");
-        }
-        Long follower = (long) followRepository.findAllByReceiver_id(targetUser.get().getId()).size();
-        Long following = (long) followRepository.findAllBySender_id(targetUser.get().getId()).size();
+    public UserInfoDto getProfile(Long userId) {
+
+        User targetUser = userRepository.findById(userId)
+                .orElseThrow(() -> new NotSearchedTargetException("존재하지 않는 유저입니다."));
+
+        Long follower = (long) followRepository.findAllByReceiver_id(targetUser.getId()).size();
+        Long following = (long) followRepository.findAllBySender_id(targetUser.getId()).size();
+
         return UserInfoDto.builder().
-                nickname(targetUser.get().getNickname())
-                .profile_image_url(targetUser.get().getProfile_image())
+                nickname(targetUser.getNickname())
+                .profile_image_url(targetUser.getProfile_image())
                 .follower(follower)
                 .following(following)
                 .build();

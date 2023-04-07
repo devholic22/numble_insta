@@ -7,6 +7,7 @@ import com.numble.instagram.dto.user.LoginDto;
 import com.numble.instagram.dto.user.UserDto;
 import com.numble.instagram.entity.User;
 import com.numble.instagram.exception.ExceptionResponse;
+import com.numble.instagram.exception.NotSearchedTargetException;
 import com.numble.instagram.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +45,7 @@ public class UserController {
     public ResponseEntity<?> getUserInfo(@PathVariable Long user_id) {
         try {
             return ResponseEntity.ok(userService.getProfile(user_id));
-        } catch (RuntimeException e) {
+        } catch (NotSearchedTargetException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(exceptionResponse);
