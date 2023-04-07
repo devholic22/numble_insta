@@ -57,6 +57,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
+                .requestMatchers("/hello").permitAll()
                 .requestMatchers("/signup").permitAll()
                 .requestMatchers("/login").permitAll()
                 .requestMatchers("/profile/{user_id}").permitAll()
