@@ -1,6 +1,5 @@
 package com.numble.instagram.service;
 
-import com.numble.instagram.dto.reply.DeleteReplyDto;
 import com.numble.instagram.dto.reply.EditReplyDto;
 import com.numble.instagram.dto.reply.ReplyDto;
 import com.numble.instagram.entity.Comment;
@@ -74,14 +73,19 @@ public class ReplyService {
         return targetReply;
     }
 
-    public void delete(DeleteReplyDto deleteReplyDto, User loggedInUser) {
-        Optional<Reply> targetReply = replyRepository.findById(deleteReplyDto.getId());
-        if (targetReply.isEmpty()) {
-            throw new RuntimeException("해당 답글이 없습니다.");
+    public void delete(Long id, User writer) {
+
+        if (writer == null) {
+            throw new NotLoggedInException("로그인되지 않았습니다.");
         }
-        if (!targetReply.get().getWriter().equals(loggedInUser)) {
-            throw new RuntimeException("삭제할 수 없습니다.");
+
+        Reply targetReply = replyRepository.findById(id)
+                .orElseThrow(() -> new NotSearchedTargetException("해당 답글이 없습니다."));
+
+        if (!targetReply.getWriter().equals(writer)) {
+            throw new NotPermissionException("답글을 삭제할 수 없습니다.");
         }
-        replyRepository.deleteById(deleteReplyDto.getId());
+
+        replyRepository.deleteById(id);
     }
 }
