@@ -4,6 +4,8 @@ import com.numble.instagram.dto.jwt.TokenDto;
 import com.numble.instagram.dto.user.*;
 import com.numble.instagram.entity.Authority;
 import com.numble.instagram.entity.User;
+import com.numble.instagram.exception.AlreadyExitedUserException;
+import com.numble.instagram.exception.NotLoggedInException;
 import com.numble.instagram.exception.NotSearchedTargetException;
 import com.numble.instagram.jwt.JwtFilter;
 import com.numble.instagram.jwt.TokenProvider;
@@ -100,27 +102,20 @@ public class UserService {
                 .build();
     }
 
-    public void delete(DeleteUserDto deleteUserDto) {
-        User loggedInUser = getLoggedInUser();
-        Optional<User> targetUser = userRepository.findById(deleteUserDto.getUser_id());
-        if (targetUser.isEmpty()) {
-            throw new RuntimeException("존재하지 않는 유저입니다.");
+    public void delete(User loggedInUser) {
+
+        if (loggedInUser == null) {
+            throw new NotLoggedInException("로그인되지 않았습니다.");
         }
-        if (!loggedInUser.equals(targetUser.get())) {
-            throw new RuntimeException("탈퇴할 권한이 없습니다.");
+
+        if (!loggedInUser.isActivated()) {
+            throw new AlreadyExitedUserException("이미 탈퇴한 유저입니다.");
         }
+
         loggedInUser.setActivated(false);
         loggedInUser.setProfile_image("default_image.png");
         loggedInUser.setNickname("deleted_user");
         loggedInUser.setAuthorities(new HashSet<>());
-    }
-
-    public Optional<User> getUserWithAuthorities(String username) {
-        return userRepository.findOneWithAuthoritiesByNickname(username);
-    }
-
-    public Optional<User> getMyUserWithAuthorities() {
-        return SecurityUtil.getCurrentUsername().flatMap(userRepository::findOneWithAuthoritiesByNickname);
     }
 
     public User getLoggedInUser() {
