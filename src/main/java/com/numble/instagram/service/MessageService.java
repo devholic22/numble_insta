@@ -4,16 +4,17 @@ import com.numble.instagram.dto.message.MessageDto;
 import com.numble.instagram.entity.ChatRoom;
 import com.numble.instagram.entity.Message;
 import com.numble.instagram.entity.User;
+import com.numble.instagram.exception.NotLoggedInException;
+import com.numble.instagram.exception.NotQualifiedDtoException;
+import com.numble.instagram.exception.NotSearchedTargetException;
+import com.numble.instagram.exception.SelfMessageException;
 import com.numble.instagram.repository.ChatRoomRepository;
 import com.numble.instagram.repository.MessageRepository;
 import com.numble.instagram.repository.UserRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -30,42 +31,51 @@ public class MessageService {
         this.chatRoomRepository = chatRoomRepository;
     }
 
-    public void send(MessageDto messageDto) {
-        User loggedInUser = getLoggedInUser();
-        if (loggedInUser.getId() == messageDto.getUser_id()) {
-            throw new RuntimeException("자기 자신과는 채팅할 수 없습니다.");
+    public void send(MessageDto messageDto, User sender) {
+
+        if (sender == null) {
+            throw new NotLoggedInException("로그인되지 않았습니다.");
         }
-        Optional<User> targetUser = userRepository.findById(messageDto.getUser_id());
-        if (targetUser.isEmpty()) {
-            throw new RuntimeException("없는 사용자 입니다.");
+
+        if (messageDto.getUser_id() == null || messageDto.getContent() == null) {
+            throw new NotQualifiedDtoException("user_id 또는 content가 비어있습니다.");
         }
-        ChatRoom existRoom = chatRoomRepository.findByOpener_IdAndJoiner_Id(loggedInUser.getId(), targetUser.get().getId());
+
+        if (sender.getId().equals(messageDto.getUser_id())) {
+            throw new SelfMessageException("자기 자신과는 채팅할 수 없습니다.");
+        }
+
+        User targetUser = userRepository.findById(messageDto.getUser_id())
+                .orElseThrow(() -> new NotSearchedTargetException("없는 사용자 입니다."));
+
+        ChatRoom existRoom = findChatRoom(sender, targetUser);
+
         if (existRoom == null) {
-            existRoom = chatRoomRepository.findByOpener_IdAndJoiner_Id(targetUser.get().getId(), loggedInUser.getId());
-            if (existRoom == null) {
-                // 방 생성 (loggedInUser가 opener, targetUser가 joiner)
-                ChatRoom newChatRoom = ChatRoom.builder()
-                        .opener(loggedInUser)
-                        .joiner(targetUser.get())
-                        .build();
-                chatRoomRepository.save(newChatRoom);
-                existRoom = newChatRoom;
-            }
+            ChatRoom newChatRoom = ChatRoom.builder()
+                    .opener(sender)
+                    .joiner(targetUser)
+                    .build();
+            chatRoomRepository.save(newChatRoom);
+            existRoom = newChatRoom;
         }
+
         // 방에 메시지 추가
         Message newMessage = Message.builder()
                 .room(existRoom)
-                .sender(loggedInUser)
-                .receiver(targetUser.get())
+                .sender(sender)
+                .receiver(targetUser)
                 .content(messageDto.getContent())
                 .send_at(new Timestamp(System.currentTimeMillis()))
                 .build();
+
         messageRepository.save(newMessage);
     }
 
-    public User getLoggedInUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String nickname = authentication.getName();
-        return userRepository.findOneWithAuthoritiesByNickname(nickname).get();
+    private ChatRoom findChatRoom(User sender, User targetUser) {
+        ChatRoom existRoom = chatRoomRepository.findByOpener_IdAndJoiner_Id(sender.getId(), targetUser.getId());
+        if (existRoom == null) {
+            existRoom = chatRoomRepository.findByOpener_IdAndJoiner_Id(targetUser.getId(), sender.getId());
+        }
+        return existRoom;
     }
 }
