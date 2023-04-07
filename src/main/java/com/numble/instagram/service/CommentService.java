@@ -73,16 +73,19 @@ public class CommentService {
         return targetComment;
     }
 
-    public void delete(Long commentId, User loggedInUser) {
-        Optional<Comment> targetComment = commentRepository.findById(commentId);
-        System.out.println(targetComment.isEmpty());
-        if (targetComment.isEmpty()) {
-            throw new RuntimeException("해당 댓글이 없습니다.");
+    public void delete(Long id, User writer) {
+
+        if (writer == null) {
+            throw new NotLoggedInException("로그인되지 않았습니다.");
         }
-        User writer = targetComment.get().getWriter();
-        if (!writer.equals(loggedInUser)) {
-            throw new RuntimeException("삭제할 수 없습니다.");
+
+        Comment targetComment = commentRepository.findById(id).orElseThrow(
+                () -> new NotSearchedTargetException("해당 댓글이 없습니다."));
+
+        if (!writer.equals(targetComment.getWriter())) {
+            throw new NotPermissionException("댓글을 삭제할 수 없습니다.");
         }
-        commentRepository.deleteById(commentId);
+
+        commentRepository.deleteById(id);
     }
 }
