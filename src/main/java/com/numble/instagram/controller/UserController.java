@@ -57,7 +57,7 @@ public class UserController {
     public ResponseEntity<?> editProfile(@ModelAttribute EditUserDto editUserDto) {
         try {
             return ResponseEntity.ok(userService.edit(editUserDto, userUtil.getLoggedInUser()));
-        } catch (NotLoggedInException | NotQualifiedDtoException e) {
+        } catch (NotLoggedInException | ExitedUserException | NotQualifiedDtoException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(exceptionResponse);

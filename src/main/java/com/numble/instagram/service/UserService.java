@@ -4,10 +4,7 @@ import com.numble.instagram.dto.jwt.TokenDto;
 import com.numble.instagram.dto.user.*;
 import com.numble.instagram.entity.Authority;
 import com.numble.instagram.entity.User;
-import com.numble.instagram.exception.AlreadyExitedUserException;
-import com.numble.instagram.exception.NotLoggedInException;
-import com.numble.instagram.exception.NotQualifiedDtoException;
-import com.numble.instagram.exception.NotSearchedTargetException;
+import com.numble.instagram.exception.*;
 import com.numble.instagram.jwt.JwtFilter;
 import com.numble.instagram.jwt.TokenProvider;
 import com.numble.instagram.repository.FollowRepository;
@@ -82,6 +79,10 @@ public class UserService {
 
         if (loggedInUser == null) {
             throw new NotLoggedInException("로그인되지 않았습니다.");
+        }
+
+        if (!loggedInUser.isActivated()) {
+            throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");
         }
 
         if (editUserDto.getNickname() == null || editUserDto.getProfile_image() == null) {

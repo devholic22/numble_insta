@@ -26,7 +26,10 @@ public class ReplyController {
     public ResponseEntity<?> write(@RequestBody ReplyDto replyDto) {
         try {
             return ResponseEntity.ok(replyService.write(replyDto, userUtil.getLoggedInUser()));
-        } catch (NotLoggedInException | NotQualifiedDtoException | NotSearchedTargetException e) {
+        } catch (NotLoggedInException |
+                 ExitedUserException |
+                 NotQualifiedDtoException |
+                 NotSearchedTargetException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(exceptionResponse);
@@ -38,8 +41,9 @@ public class ReplyController {
         try {
             return ResponseEntity.ok(replyService.edit(editReplyDto, id, userUtil.getLoggedInUser()));
         } catch (NotLoggedInException |
-                NotQualifiedDtoException |
-                NotSearchedTargetException |
+                 ExitedUserException |
+                 NotQualifiedDtoException |
+                 NotSearchedTargetException |
                  NotPermissionException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -52,7 +56,10 @@ public class ReplyController {
         try {
             replyService.delete(id, userUtil.getLoggedInUser());
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (NotLoggedInException | NotSearchedTargetException | NotPermissionException e) {
+        } catch (NotLoggedInException |
+                 ExitedUserException |
+                 NotSearchedTargetException |
+                 NotPermissionException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(exceptionResponse);

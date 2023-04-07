@@ -25,7 +25,10 @@ public class CommentController {
     public ResponseEntity<?> addComment(@RequestBody CommentDto commentDto) {
         try {
             return ResponseEntity.ok(commentService.write(commentDto, userUtil.getLoggedInUser()));
-        } catch (NotLoggedInException | NotSearchedTargetException | NotQualifiedDtoException e) {
+        } catch (NotLoggedInException |
+                 ExitedUserException |
+                 NotSearchedTargetException |
+                 NotQualifiedDtoException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(exceptionResponse);
@@ -36,8 +39,11 @@ public class CommentController {
     public ResponseEntity<?> editComment(@RequestBody EditCommentDto editCommentDto, @PathVariable Long id) {
         try {
             return ResponseEntity.ok(commentService.edit(editCommentDto, id, userUtil.getLoggedInUser()));
-        } catch (NotLoggedInException | NotQualifiedDtoException | NotSearchedTargetException
-                 | NotPermissionException e) {
+        } catch (NotLoggedInException |
+                 ExitedUserException |
+                 NotQualifiedDtoException |
+                 NotSearchedTargetException |
+                 NotPermissionException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(exceptionResponse);
@@ -48,7 +54,10 @@ public class CommentController {
     public ResponseEntity<?> deleteComment(@PathVariable Long id) {
         try {
             commentService.delete(id, userUtil.getLoggedInUser());
-        } catch (NotLoggedInException | NotSearchedTargetException | NotPermissionException e) {
+        } catch (NotLoggedInException |
+                 ExitedUserException |
+                 NotSearchedTargetException |
+                 NotPermissionException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(exceptionResponse);

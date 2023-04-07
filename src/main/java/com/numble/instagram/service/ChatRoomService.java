@@ -6,6 +6,7 @@ import com.numble.instagram.entity.ChatRoom;
 import com.numble.instagram.entity.Message;
 import com.numble.instagram.entity.User;
 import com.numble.instagram.exception.ChatRoomException;
+import com.numble.instagram.exception.ExitedUserException;
 import com.numble.instagram.exception.NotLoggedInException;
 import com.numble.instagram.repository.ChatRoomRepository;
 import com.numble.instagram.repository.MessageRepository;
@@ -30,8 +31,13 @@ public class ChatRoomService {
     }
 
     public HashMap<String, ArrayList<GetRoomDto>> findAllMyRooms(User loggedInUser) {
+
         if (loggedInUser == null) {
             throw new NotLoggedInException("로그인되지 않았습니다.");
+        }
+
+        if (!loggedInUser.isActivated()) {
+            throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");
         }
 
         List<ChatRoom> allRooms = Stream.concat(
@@ -59,6 +65,10 @@ public class ChatRoomService {
 
         if (loggedInUser == null) {
             throw new NotLoggedInException("로그인되지 않았습니다.");
+        }
+
+        if (!loggedInUser.isActivated()) {
+            throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");
         }
 
         ChatRoom targetRoom = findChatRoomByIdAndUser(chatRoomId, loggedInUser);

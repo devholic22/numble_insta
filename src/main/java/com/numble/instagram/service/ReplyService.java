@@ -5,10 +5,7 @@ import com.numble.instagram.dto.reply.ReplyDto;
 import com.numble.instagram.entity.Comment;
 import com.numble.instagram.entity.Reply;
 import com.numble.instagram.entity.User;
-import com.numble.instagram.exception.NotLoggedInException;
-import com.numble.instagram.exception.NotPermissionException;
-import com.numble.instagram.exception.NotQualifiedDtoException;
-import com.numble.instagram.exception.NotSearchedTargetException;
+import com.numble.instagram.exception.*;
 import com.numble.instagram.repository.CommentRepository;
 import com.numble.instagram.repository.ReplyRepository;
 import org.springframework.stereotype.Service;
@@ -33,6 +30,10 @@ public class ReplyService {
             throw new NotLoggedInException("로그인되지 않았습니다.");
         }
 
+        if (!writer.isActivated()) {
+            throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");
+        }
+
         if (replyDto.getComment_id() == null || replyDto.getContent() == null) {
             throw new NotQualifiedDtoException("comment_id 또는 content가 비어있습니다.");
         }
@@ -55,6 +56,10 @@ public class ReplyService {
             throw new NotLoggedInException("로그인되지 않았습니다.");
         }
 
+        if (!writer.isActivated()) {
+            throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");
+        }
+
         if (editReplyDto.getContent() == null) {
             throw new NotQualifiedDtoException("content가 비어있습니다.");
         }
@@ -75,6 +80,10 @@ public class ReplyService {
 
         if (writer == null) {
             throw new NotLoggedInException("로그인되지 않았습니다.");
+        }
+
+        if (!writer.isActivated()) {
+            throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");
         }
 
         Reply targetReply = replyRepository.findById(id)

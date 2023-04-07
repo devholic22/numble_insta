@@ -4,10 +4,7 @@ import com.numble.instagram.dto.message.MessageDto;
 import com.numble.instagram.entity.ChatRoom;
 import com.numble.instagram.entity.Message;
 import com.numble.instagram.entity.User;
-import com.numble.instagram.exception.NotLoggedInException;
-import com.numble.instagram.exception.NotQualifiedDtoException;
-import com.numble.instagram.exception.NotSearchedTargetException;
-import com.numble.instagram.exception.SelfMessageException;
+import com.numble.instagram.exception.*;
 import com.numble.instagram.repository.ChatRoomRepository;
 import com.numble.instagram.repository.MessageRepository;
 import com.numble.instagram.repository.UserRepository;
@@ -37,6 +34,10 @@ public class MessageService {
             throw new NotLoggedInException("로그인되지 않았습니다.");
         }
 
+        if (!sender.isActivated()) {
+            throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");
+        }
+
         if (messageDto.getUser_id() == null || messageDto.getContent() == null) {
             throw new NotQualifiedDtoException("user_id 또는 content가 비어있습니다.");
         }
@@ -47,6 +48,10 @@ public class MessageService {
 
         User targetUser = userRepository.findById(messageDto.getUser_id())
                 .orElseThrow(() -> new NotSearchedTargetException("없는 사용자 입니다."));
+
+        if (!targetUser.isActivated()) {
+            throw new ExitedTargetUserException("탈퇴한 유저라 불가능합니다.");
+        }
 
         ChatRoom existRoom = findChatRoom(sender, targetUser);
 

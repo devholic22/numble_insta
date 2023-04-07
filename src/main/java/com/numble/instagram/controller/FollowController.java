@@ -25,8 +25,10 @@ public class FollowController {
             followService.addFollow(user_id, userUtil.getLoggedInUser());
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NotLoggedInException |
+                 ExitedUserException |
                  SelfFollowAPIException |
                  NotSearchedTargetException |
+                 ExitedTargetUserException |
                  AlreadyFollowException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -40,6 +42,7 @@ public class FollowController {
             followService.cancelFollow(user_id, userUtil.getLoggedInUser());
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NotLoggedInException |
+                 ExitedUserException |
                  SelfFollowAPIException |
                  NotSearchedTargetException |
                  NotFollowException e) {

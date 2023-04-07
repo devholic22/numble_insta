@@ -5,10 +5,7 @@ import com.numble.instagram.dto.comment.EditCommentDto;
 import com.numble.instagram.entity.Comment;
 import com.numble.instagram.entity.Post;
 import com.numble.instagram.entity.User;
-import com.numble.instagram.exception.NotLoggedInException;
-import com.numble.instagram.exception.NotPermissionException;
-import com.numble.instagram.exception.NotQualifiedDtoException;
-import com.numble.instagram.exception.NotSearchedTargetException;
+import com.numble.instagram.exception.*;
 import com.numble.instagram.repository.CommentRepository;
 import com.numble.instagram.repository.PostRepository;
 import org.springframework.stereotype.Service;
@@ -33,6 +30,10 @@ public class CommentService {
             throw new NotLoggedInException("로그인되지 않았습니다.");
         }
 
+        if (!writer.isActivated()) {
+            throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");
+        }
+
         Post targetPost = postRepository.findById(commentDto.getPost_id()).
                 orElseThrow(() -> new NotSearchedTargetException("해당 글이 없습니다."));
 
@@ -55,6 +56,10 @@ public class CommentService {
             throw new NotLoggedInException("로그인되지 않았습니다.");
         }
 
+        if (!writer.isActivated()) {
+            throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");
+        }
+
         if (editCommentDto.getContent() == null) {
             throw new NotQualifiedDtoException("content가 비었습니다.");
         }
@@ -75,6 +80,10 @@ public class CommentService {
 
         if (writer == null) {
             throw new NotLoggedInException("로그인되지 않았습니다.");
+        }
+
+        if (!writer.isActivated()) {
+            throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");
         }
 
         Comment targetComment = commentRepository.findById(id).
