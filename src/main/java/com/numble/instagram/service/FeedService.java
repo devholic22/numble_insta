@@ -7,6 +7,7 @@ import com.numble.instagram.entity.Comment;
 import com.numble.instagram.entity.Post;
 import com.numble.instagram.entity.Reply;
 import com.numble.instagram.entity.User;
+import com.numble.instagram.exception.NotSearchedTargetException;
 import com.numble.instagram.repository.CommentRepository;
 import com.numble.instagram.repository.PostRepository;
 import com.numble.instagram.repository.ReplyRepository;
@@ -39,13 +40,12 @@ public class FeedService {
     }
 
     // Chat GPT로 리팩터링한 것이라서 공부 필요함.
-    public HashMap<String, ArrayList<GetFeedDto>> getFeed(Long user_id) {
-        Optional<User> writer = userRepository.findById(user_id);
-        if (writer.isEmpty()) {
-            throw new RuntimeException("해당 유저가 없습니다.");
-        }
+    public HashMap<String, ArrayList<GetFeedDto>> getFeed(Long userId) {
 
-        List<Post> feeds = postRepository.findAllByWriter_Id(user_id);
+        User writer = userRepository.findById(userId)
+                .orElseThrow(() -> new NotSearchedTargetException("해당 유저가 없습니다."));
+
+        List<Post> feeds = postRepository.findAllByWriter_Id(userId);
 
         List<GetFeedDto> feedResult = feeds.stream().map(feed -> {
             GetFeedDto feedDto = GetFeedDto.builder()
