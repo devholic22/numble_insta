@@ -26,15 +26,14 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@ModelAttribute UserDto userDto) {
-        User newUser;
         try {
-            newUser = userService.signup(userDto);
-        } catch (RuntimeException e) {
+            User newUser = userService.signup(userDto);
+            return ResponseEntity.ok(newUser);
+        } catch (NotQualifiedDtoException | AlreadyExistUserException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(exceptionResponse);
         }
-        return ResponseEntity.ok(newUser);
     }
 
     @PostMapping("/login")

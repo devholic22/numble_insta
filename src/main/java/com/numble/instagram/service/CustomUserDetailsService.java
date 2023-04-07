@@ -10,8 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 @Component("userDetailsService")
 public class CustomUserDetailsService implements UserDetailsService {
@@ -25,20 +24,19 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String nickname) throws UsernameNotFoundException {
-        return userRepository.findOneWithAuthoritiesByNickname(nickname)
-                .map(user -> createUser(nickname, user))
-                .orElseThrow(() -> new UsernameNotFoundException(nickname + " -> 데이터베이스에서 찾을 수 없습니다."));
+        User existUser = userRepository.findByNickname(nickname);
+        if (existUser == null) {
+            throw new UsernameNotFoundException("데이터베이스에서 찾을 수 없습니다.");
+        }
+        return createUser(nickname, existUser);
     }
 
     private org.springframework.security.core.userdetails.User createUser(String nickname, User user) {
         if (!user.isActivated()) {
             throw new RuntimeException(nickname + " -> 활성화되어 있지 않습니다.");
         }
-        List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream()
-                .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
-                .collect(Collectors.toList());
-        return new org.springframework.security.core.userdetails.User(user.getNickname(),
-                user.getPassword(),
-                grantedAuthorities);
+        return new org.springframework.security.core.userdetails.User(nickname,
+                null,
+                new ArrayList<>());
     }
 }
