@@ -5,89 +5,92 @@ import com.numble.instagram.dto.room.GetRoomDto;
 import com.numble.instagram.entity.ChatRoom;
 import com.numble.instagram.entity.Message;
 import com.numble.instagram.entity.User;
+import com.numble.instagram.exception.ChatRoomException;
+import com.numble.instagram.exception.NotLoggedInException;
 import com.numble.instagram.repository.ChatRoomRepository;
 import com.numble.instagram.repository.MessageRepository;
-import com.numble.instagram.repository.UserRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
 public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
-    private final UserRepository userRepository;
     private final MessageRepository messageRepository;
 
-    public ChatRoomService(ChatRoomRepository chatRoomRepository, UserRepository userRepository,
+    public ChatRoomService(ChatRoomRepository chatRoomRepository,
                            MessageRepository messageRepository) {
         this.chatRoomRepository = chatRoomRepository;
-        this.userRepository = userRepository;
         this.messageRepository = messageRepository;
     }
 
-    public HashMap<String, ArrayList<GetRoomDto>> findAllMyRooms() {
-        User loggedInUser = getLoggedInUser();
-        ArrayList<ChatRoom> findAllByOpener_Id = chatRoomRepository.findAllByOpener_Id(loggedInUser.getId());
-        ArrayList<ChatRoom> findAllByJoiner_Id = chatRoomRepository.findAllByJoiner_Id(loggedInUser.getId());
-        ArrayList<ChatRoom> allRooms = new ArrayList<>();
-        HashMap<String, ArrayList<GetRoomDto>> result = new HashMap<>();
-        ArrayList<GetRoomDto> rooms = new ArrayList<>();
-
-        allRooms.addAll(findAllByOpener_Id);
-        allRooms.addAll(findAllByJoiner_Id);
-
-        for (ChatRoom room : allRooms) {
-            ArrayList<Message> messages = messageRepository.findAllByRoomId(room.getId());
-            Message message = messages.get(messages.size() - 1);
-            GetRoomDto roomDto = GetRoomDto.builder()
-                    .id(room.getId())
-                    .nickname(message.getSender().getNickname())
-                    .profile_image(message.getSender().getProfile_image())
-                    .last_message(message.getContent())
-                    .last_send_at(message.getSend_at())
-                    .build();
-            rooms.add(roomDto);
+    public HashMap<String, ArrayList<GetRoomDto>> findAllMyRooms(User loggedInUser) {
+        if (loggedInUser == null) {
+            throw new NotLoggedInException("로그인되지 않았습니다.");
         }
+
+        List<ChatRoom> allRooms = Stream.concat(
+                chatRoomRepository.findAllByOpener_Id(loggedInUser.getId()).stream(),
+                chatRoomRepository.findAllByJoiner_Id(loggedInUser.getId()).stream()).toList();
+
+        ArrayList<GetRoomDto> rooms = allRooms.stream().map(room -> {
+            List<Message> messages = messageRepository.findAllByRoomId(room.getId());
+            Message lastMessage = messages.get(messages.size() - 1);
+            return GetRoomDto.builder()
+                    .id(room.getId())
+                    .nickname(lastMessage.getSender().getNickname())
+                    .profile_image(lastMessage.getSender().getProfile_image())
+                    .last_message(lastMessage.getContent())
+                    .last_send_at(lastMessage.getSend_at())
+                    .build();
+        }).collect(Collectors.toCollection(ArrayList::new));
+
+        HashMap<String, ArrayList<GetRoomDto>> result = new HashMap<>();
         result.put("chat_rooms", rooms);
         return result;
     }
 
-    public HashMap<String, List<GetMessageDto>> findRoom(Long chat_room_id) {
-        User loggedInUser = getLoggedInUser();
-        ChatRoom targetRoom = chatRoomRepository.findByIdAndOpener_Id(chat_room_id, loggedInUser.getId());
-        if (targetRoom == null) {
-            targetRoom = chatRoomRepository.findByIdAndJoiner_Id(chat_room_id, loggedInUser.getId());
+    public HashMap<String, List<GetMessageDto>> findRoom(Long chatRoomId, User loggedInUser) {
+
+        if (loggedInUser == null) {
+            throw new NotLoggedInException("로그인되지 않았습니다.");
         }
+
+        ChatRoom targetRoom = findChatRoomByIdAndUser(chatRoomId, loggedInUser);
         if (targetRoom == null) {
-            throw new RuntimeException("방이 없거나 권한이 없습니다.");
+            throw new ChatRoomException("방이 없거나 권한이 없습니다.");
         }
-        // 메시지들의 리스트를 보내야 한다.
-        ArrayList<Message> allMessage = messageRepository.findAllByRoomId(chat_room_id);
+
+        List<Message> allMessage = messageRepository.findAllByRoomId(chatRoomId);
+        List<GetMessageDto> allMessages = allMessage.stream()
+                .map(message -> {
+                    User writer = message.getSender();
+                    return GetMessageDto.builder()
+                            .id(message.getId())
+                            .nickname(writer.getNickname())
+                            .profile_image_url(writer.getProfile_image())
+                            .content(message.getContent())
+                            .sent_at(message.getSend_at())
+                            .build();
+                })
+                .collect(Collectors.toList());
+
         HashMap<String, List<GetMessageDto>> result = new HashMap<>();
-        ArrayList<GetMessageDto> allMessages = new ArrayList<>();
-        for (Message targetMessage : allMessage) {
-            Optional<User> writer = userRepository.findById(targetMessage.getSender().getId());
-            GetMessageDto message = GetMessageDto.builder()
-                    .id(targetMessage.getId())
-                    .nickname(writer.get().getNickname())
-                    .profile_image_url(writer.get().getProfile_image())
-                    .content(targetMessage.getContent())
-                    .sent_at(targetMessage.getSend_at())
-                    .build();
-            allMessages.add(message);
-        }
         result.put("messages", allMessages);
+
         return result;
     }
 
-    public User getLoggedInUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String nickname = authentication.getName();
-        return userRepository.findByNickname(nickname);
+    private ChatRoom findChatRoomByIdAndUser(Long chatRoomId, User loggedInUser) {
+        ChatRoom existRoom = chatRoomRepository.findByIdAndOpener_Id(chatRoomId, loggedInUser.getId());
+        if (existRoom == null) {
+            existRoom = chatRoomRepository.findByIdAndJoiner_Id(chatRoomId, loggedInUser.getId());
+        }
+        return existRoom;
     }
 }
