@@ -5,10 +5,7 @@ import com.numble.instagram.dto.user.EditUserDto;
 import com.numble.instagram.dto.user.LoginDto;
 import com.numble.instagram.dto.user.UserDto;
 import com.numble.instagram.entity.User;
-import com.numble.instagram.exception.AlreadyExitedUserException;
-import com.numble.instagram.exception.ExceptionResponse;
-import com.numble.instagram.exception.NotLoggedInException;
-import com.numble.instagram.exception.NotSearchedTargetException;
+import com.numble.instagram.exception.*;
 import com.numble.instagram.service.UserService;
 import com.numble.instagram.util.UserUtil;
 import org.springframework.http.HttpStatus;
@@ -57,8 +54,14 @@ public class UserController {
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<User> editProfile(@ModelAttribute EditUserDto editUserDto) {
-        return ResponseEntity.ok(userService.edit(editUserDto));
+    public ResponseEntity<?> editProfile(@ModelAttribute EditUserDto editUserDto) {
+        try {
+            return ResponseEntity.ok(userService.edit(editUserDto, userUtil.getLoggedInUser()));
+        } catch (NotLoggedInException | NotQualifiedDtoException e) {
+            ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(exceptionResponse);
+        }
     }
 
     @DeleteMapping("/profile")

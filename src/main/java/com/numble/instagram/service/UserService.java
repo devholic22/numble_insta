@@ -6,12 +6,12 @@ import com.numble.instagram.entity.Authority;
 import com.numble.instagram.entity.User;
 import com.numble.instagram.exception.AlreadyExitedUserException;
 import com.numble.instagram.exception.NotLoggedInException;
+import com.numble.instagram.exception.NotQualifiedDtoException;
 import com.numble.instagram.exception.NotSearchedTargetException;
 import com.numble.instagram.jwt.JwtFilter;
 import com.numble.instagram.jwt.TokenProvider;
 import com.numble.instagram.repository.FollowRepository;
 import com.numble.instagram.repository.UserRepository;
-import com.numble.instagram.util.SecurityUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -79,8 +78,16 @@ public class UserService {
         return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
     }
 
-    public User edit(EditUserDto editUserDto) {
-        User loggedInUser = getLoggedInUser();
+    public User edit(EditUserDto editUserDto, User loggedInUser) {
+
+        if (loggedInUser == null) {
+            throw new NotLoggedInException("로그인되지 않았습니다.");
+        }
+
+        if (editUserDto.getNickname() == null || editUserDto.getProfile_image() == null) {
+            throw new NotQualifiedDtoException("nickname 또는 profile_image가 비어있습니다.");
+        }
+
         loggedInUser.setNickname(editUserDto.getNickname());
         loggedInUser.setProfile_image(editUserDto.getProfile_image().getOriginalFilename());
         return loggedInUser;
@@ -116,11 +123,5 @@ public class UserService {
         loggedInUser.setProfile_image("default_image.png");
         loggedInUser.setNickname("deleted_user");
         loggedInUser.setAuthorities(new HashSet<>());
-    }
-
-    public User getLoggedInUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String nickname = authentication.getName();
-        return userRepository.findOneWithAuthoritiesByNickname(nickname).get();
     }
 }
