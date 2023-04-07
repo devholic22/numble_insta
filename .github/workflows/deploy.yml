@@ -8,7 +8,7 @@ on: # workflow 실행될 조건
 
 jobs: # 이벤트가 발생했을 때 독립된 환경에서 실행되어야 하는 일련의 일
   build: # 빌드 환경
-    runs-on: ubuntu-18.04 # (3). OS환경
+    runs-on: ubuntu-latest # (3). OS환경
     # Github Actions의 workflow는 Runner라고 하는 Github Actions Runner 어플리케이션이 설치된 인스턴스 서버에서 실행이 된다. 그 서버의 OS를 뜻한다.
 
     steps: # 각 단계
