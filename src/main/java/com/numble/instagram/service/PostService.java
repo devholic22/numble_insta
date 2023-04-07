@@ -21,7 +21,7 @@ public class PostService {
 
         Post newPost = Post.builder()
                 .content(postDto.getContent())
-                .image_url(postDto.getImage_url().getOriginalFilename())
+                .image_url(postDto.getImage().getOriginalFilename())
                 .writer(writer)
                 .build();
         return postRepository.save(newPost);
@@ -29,7 +29,7 @@ public class PostService {
 
     public Post edit(Post post, PostDto postDto) {
         post.setContent(postDto.getContent());
-        post.setImage_url(postDto.getImage_url().getOriginalFilename());
+        post.setImage_url(postDto.getImage().getOriginalFilename());
 
         return post;
     }

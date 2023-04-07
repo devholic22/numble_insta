@@ -31,11 +31,10 @@ public class PostController {
         this.postRepository = postRepository;
     }
 
-    @PostMapping
     // @RequestBody는 json
     // @RequestParam은 주로 html form에서 사용
     // @RequestPart는 파일 전송에 특화
-
+    @PostMapping
     public ResponseEntity<Post> write(@ModelAttribute PostDto postDto) {
         return ResponseEntity.ok(postService.write(postDto, getLoggedInUser()));
     }

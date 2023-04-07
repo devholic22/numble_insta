@@ -12,5 +12,5 @@ public class PostDto {
 
     private String content;
 
-    private MultipartFile image_url;
+    private MultipartFile image;
 }
