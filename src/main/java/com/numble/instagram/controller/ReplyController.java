@@ -5,8 +5,12 @@ import com.numble.instagram.dto.reply.EditReplyDto;
 import com.numble.instagram.dto.reply.ReplyDto;
 import com.numble.instagram.entity.User;
 import com.numble.instagram.exception.ExceptionResponse;
+import com.numble.instagram.exception.NotLoggedInException;
+import com.numble.instagram.exception.NotQualifiedDtoException;
+import com.numble.instagram.exception.NotSearchedTargetException;
 import com.numble.instagram.repository.UserRepository;
 import com.numble.instagram.service.ReplyService;
+import com.numble.instagram.util.UserUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -19,18 +23,19 @@ public class ReplyController {
 
     private final ReplyService replyService;
     private final UserRepository userRepository;
+    private final UserUtil userUtil;
 
-    public ReplyController(ReplyService replyService, UserRepository userRepository) {
+    public ReplyController(ReplyService replyService, UserRepository userRepository, UserUtil userUtil) {
         this.replyService = replyService;
         this.userRepository = userRepository;
+        this.userUtil = userUtil;
     }
 
     @PostMapping
     public ResponseEntity<?> write(@RequestBody ReplyDto replyDto) {
-        User loggedInUser = getLoggedInUser();
         try {
-            return ResponseEntity.ok(replyService.write(replyDto, loggedInUser));
-        } catch (RuntimeException e) {
+            return ResponseEntity.ok(replyService.write(replyDto, userUtil.getLoggedInUser()));
+        } catch (NotLoggedInException | NotQualifiedDtoException | NotSearchedTargetException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(exceptionResponse);

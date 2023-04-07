@@ -6,6 +6,9 @@ import com.numble.instagram.dto.reply.ReplyDto;
 import com.numble.instagram.entity.Comment;
 import com.numble.instagram.entity.Reply;
 import com.numble.instagram.entity.User;
+import com.numble.instagram.exception.NotLoggedInException;
+import com.numble.instagram.exception.NotQualifiedDtoException;
+import com.numble.instagram.exception.NotSearchedTargetException;
 import com.numble.instagram.repository.CommentRepository;
 import com.numble.instagram.repository.ReplyRepository;
 import org.springframework.stereotype.Service;
@@ -26,16 +29,25 @@ public class ReplyService {
         this.commentRepository = commentRepository;
     }
 
-    public Reply write(ReplyDto replyDto, User loggedInUser) {
-        Optional<Comment> targetComment = commentRepository.findById(replyDto.getComment_id());
-        if (targetComment.isEmpty()) {
-            throw new RuntimeException("해당 댓글이 없습니다.");
+    public Reply write(ReplyDto replyDto, User writer) {
+
+        if (writer == null) {
+            throw new NotLoggedInException("로그인되지 않았습니다.");
         }
+
+        if (replyDto.getComment_id() == null || replyDto.getContent() == null) {
+            throw new NotQualifiedDtoException("comment_id 또는 content가 비어있습니다.");
+        }
+
+        Comment targetComment = commentRepository.findById(replyDto.getComment_id())
+                .orElseThrow(() -> new NotSearchedTargetException("해당 댓글이 없습니다."));
+        
         Reply newReply = Reply.builder()
                 .content(replyDto.getContent())
-                .writer(loggedInUser)
-                .comment(targetComment.get())
+                .writer(writer)
+                .comment(targetComment)
                 .build();
+
         return replyRepository.save(newReply);
     }
 
