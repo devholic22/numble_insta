@@ -9,6 +9,5 @@ import lombok.*;
 @NoArgsConstructor
 public class EditCommentDto {
 
-    private Long id;
     private String content;
 }

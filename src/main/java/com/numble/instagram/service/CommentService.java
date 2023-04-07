@@ -51,17 +51,17 @@ public class CommentService {
         return commentRepository.save(newComment);
     }
 
-    public Comment edit(EditCommentDto editCommentDto, User writer) {
+    public Comment edit(EditCommentDto editCommentDto, Long id, User writer) {
 
         if (writer == null) {
             throw new NotLoggedInException("로그인되지 않았습니다.");
         }
 
-        if (editCommentDto.getId() == null || editCommentDto.getContent() == null) {
-            throw new NotQualifiedDtoException("id 또는 content가 비었습니다.");
+        if (editCommentDto.getContent() == null) {
+            throw new NotQualifiedDtoException("content가 비었습니다.");
         }
 
-        Comment targetComment = commentRepository.findById(editCommentDto.getId())
+        Comment targetComment = commentRepository.findById(id)
                 .orElseThrow(() -> new NotSearchedTargetException("해당 댓글이 없습니다."));
 
         if (!writer.equals(targetComment.getWriter())) {

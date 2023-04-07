@@ -40,10 +40,10 @@ public class CommentController {
         }
     }
 
-    @PutMapping
-    public ResponseEntity<?> editComment(@RequestBody EditCommentDto editCommentDto) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editComment(@RequestBody EditCommentDto editCommentDto, @PathVariable Long id) {
         try {
-            return ResponseEntity.ok(commentService.edit(editCommentDto, userUtil.getLoggedInUser()));
+            return ResponseEntity.ok(commentService.edit(editCommentDto, id, userUtil.getLoggedInUser()));
         } catch (NotLoggedInException | NotQualifiedDtoException | NotSearchedTargetException
                  | NotPermissionException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
