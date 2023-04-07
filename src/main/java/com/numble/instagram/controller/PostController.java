@@ -1,8 +1,6 @@
 package com.numble.instagram.controller;
 
 import com.numble.instagram.dto.post.PostDto;
-import com.numble.instagram.entity.Post;
-import com.numble.instagram.entity.User;
 import com.numble.instagram.exception.*;
 import com.numble.instagram.repository.PostRepository;
 import com.numble.instagram.repository.UserRepository;
@@ -10,28 +8,18 @@ import com.numble.instagram.service.PostService;
 import com.numble.instagram.util.UserUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/post")
 public class PostController {
 
     private final PostService postService;
-    private final UserRepository userRepository;
-    private final PostRepository postRepository;
     private final UserUtil userUtil;
 
     public PostController(PostService postService,
-                          UserRepository userRepository,
-                          PostRepository postRepository,
                           UserUtil userUtil) {
         this.postService = postService;
-        this.userRepository = userRepository;
-        this.postRepository = postRepository;
         this.userUtil = userUtil;
     }
 

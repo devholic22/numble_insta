@@ -3,7 +3,6 @@ package com.numble.instagram.controller;
 import com.numble.instagram.dto.comment.CommentDto;
 import com.numble.instagram.dto.comment.EditCommentDto;
 import com.numble.instagram.exception.*;
-import com.numble.instagram.repository.UserRepository;
 import com.numble.instagram.service.CommentService;
 import com.numble.instagram.util.UserUtil;
 import org.springframework.http.HttpStatus;
