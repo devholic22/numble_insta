@@ -53,7 +53,7 @@ jobs: # 이벤트가 발생했을 때 독립된 환경에서 실행되어야 하
       - name: Update Elastic Beanstalk environment
         run: |
           aws elasticbeanstalk update-environment-version \
-            --application-name numble_instagram \
+            --application-name numble-instagram \
             --environment-name Numbleinstagram-env \
             --version-label "github-action-${{ steps.current-time.outputs.formattedTime }}"
       - name: Beanstalk Deploy
