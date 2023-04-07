@@ -46,8 +46,8 @@ public class PostService {
             throw new NotLoggedInException("로그인되지 않았습니다.");
         }
 
-        Post targetPost = postRepository.findById(id).orElseThrow(
-                () -> new NotSearchedTargetException("해당 글이 없습니다."));
+        Post targetPost = postRepository.findById(id).
+                orElseThrow(() -> new NotSearchedTargetException("해당 글이 없습니다."));
 
         if (!writer.equals(targetPost.getWriter())) {
             throw new NotPermissionException("글을 수정할 수 없습니다.");
@@ -69,8 +69,8 @@ public class PostService {
             throw new NotLoggedInException("로그인되지 않았습니다.");
         }
 
-        Post targetPost = postRepository.findById(id).orElseThrow(
-                () -> new NotSearchedTargetException("해당 글이 없습니다."));
+        Post targetPost = postRepository.findById(id).
+                orElseThrow(() -> new NotSearchedTargetException("해당 글이 없습니다."));
 
         if (!writer.equals(targetPost.getWriter())) {
             throw new NotPermissionException("글을 삭제할 수 없습니다.");

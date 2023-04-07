@@ -33,8 +33,8 @@ public class CommentService {
             throw new NotLoggedInException("로그인되지 않았습니다.");
         }
 
-        Post targetPost = postRepository.findById(commentDto.getPost_id()).orElseThrow(
-                () -> new NotSearchedTargetException("해당 글이 없습니다."));
+        Post targetPost = postRepository.findById(commentDto.getPost_id()).
+                orElseThrow(() -> new NotSearchedTargetException("해당 글이 없습니다."));
 
         if (commentDto.getPost_id() == null || commentDto.getContent() == null) {
             throw new NotQualifiedDtoException("post_id 또는 content가 비었습니다.");
@@ -77,8 +77,8 @@ public class CommentService {
             throw new NotLoggedInException("로그인되지 않았습니다.");
         }
 
-        Comment targetComment = commentRepository.findById(id).orElseThrow(
-                () -> new NotSearchedTargetException("해당 댓글이 없습니다."));
+        Comment targetComment = commentRepository.findById(id).
+                orElseThrow(() -> new NotSearchedTargetException("해당 댓글이 없습니다."));
 
         if (!writer.equals(targetComment.getWriter())) {
             throw new NotPermissionException("댓글을 삭제할 수 없습니다.");
