@@ -28,8 +28,7 @@ public class MessageController {
         try {
             messageService.send(messageDto, userUtil.getLoggedInUser());
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (NotLoggedInException |
-                 ExitedUserException |
+        } catch (ExitedUserException |
                  NotQualifiedDtoException |
                  SelfMessageException |
                  NotSearchedTargetException |

@@ -30,7 +30,7 @@ public class PostController {
     public ResponseEntity<?> write(@ModelAttribute PostDto postDto) {
         try {
             return ResponseEntity.ok(postService.write(postDto, userUtil.getLoggedInUser()));
-        } catch (NotLoggedInException | ExitedUserException | NotQualifiedDtoException e) {
+        } catch (ExitedUserException | NotQualifiedDtoException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(exceptionResponse);
@@ -41,8 +41,7 @@ public class PostController {
     public ResponseEntity<?> edit(@ModelAttribute PostDto postDto, @PathVariable Long id) {
         try {
             return ResponseEntity.ok(postService.edit(id, postDto, userUtil.getLoggedInUser()));
-        } catch (NotLoggedInException |
-                 ExitedUserException |
+        } catch (ExitedUserException |
                  NotSearchedTargetException |
                  NotPermissionException |
                  NotQualifiedDtoException e) {
@@ -57,8 +56,7 @@ public class PostController {
         try {
             postService.delete(id, userUtil.getLoggedInUser());
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (NotLoggedInException |
-                 ExitedUserException |
+        } catch (ExitedUserException |
                  NotSearchedTargetException |
                  NotPermissionException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());

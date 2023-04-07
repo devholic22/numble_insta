@@ -56,7 +56,7 @@ public class UserController {
     public ResponseEntity<?> editProfile(@ModelAttribute EditUserDto editUserDto) {
         try {
             return ResponseEntity.ok(userService.edit(editUserDto, userUtil.getLoggedInUser()));
-        } catch (NotLoggedInException | ExitedUserException | NotQualifiedDtoException e) {
+        } catch (ExitedUserException | NotQualifiedDtoException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(exceptionResponse);
@@ -68,7 +68,7 @@ public class UserController {
         try {
             userService.delete(userUtil.getLoggedInUser());
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (NotLoggedInException | AlreadyExitedUserException e) {
+        } catch (AlreadyExitedUserException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(exceptionResponse);

@@ -7,7 +7,6 @@ import com.numble.instagram.entity.Message;
 import com.numble.instagram.entity.User;
 import com.numble.instagram.exception.ChatRoomException;
 import com.numble.instagram.exception.ExitedUserException;
-import com.numble.instagram.exception.NotLoggedInException;
 import com.numble.instagram.repository.ChatRoomRepository;
 import com.numble.instagram.repository.MessageRepository;
 import org.springframework.stereotype.Service;
@@ -31,10 +30,6 @@ public class ChatRoomService {
     }
 
     public HashMap<String, ArrayList<GetRoomDto>> findAllMyRooms(User loggedInUser) {
-
-        if (loggedInUser == null) {
-            throw new NotLoggedInException("로그인되지 않았습니다.");
-        }
 
         if (!loggedInUser.isActivated()) {
             throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");
@@ -62,10 +57,6 @@ public class ChatRoomService {
     }
 
     public HashMap<String, List<GetMessageDto>> findRoom(Long chatRoomId, User loggedInUser) {
-
-        if (loggedInUser == null) {
-            throw new NotLoggedInException("로그인되지 않았습니다.");
-        }
 
         if (!loggedInUser.isActivated()) {
             throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");

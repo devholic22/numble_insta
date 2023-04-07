@@ -3,7 +3,6 @@ package com.numble.instagram.controller;
 import com.numble.instagram.exception.ChatRoomException;
 import com.numble.instagram.exception.ExceptionResponse;
 import com.numble.instagram.exception.ExitedUserException;
-import com.numble.instagram.exception.NotLoggedInException;
 import com.numble.instagram.service.ChatRoomService;
 import com.numble.instagram.util.UserUtil;
 import org.springframework.http.HttpStatus;
@@ -27,7 +26,7 @@ public class ChatRoomController {
     public ResponseEntity<?> myRooms() {
         try {
             return ResponseEntity.ok(chatRoomService.findAllMyRooms(userUtil.getLoggedInUser()));
-        }  catch (NotLoggedInException | ExitedUserException e) {
+        }  catch (ExitedUserException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(exceptionResponse);
@@ -39,7 +38,7 @@ public class ChatRoomController {
     public ResponseEntity<?> room(@PathVariable Long chat_room_id) {
         try {
             return ResponseEntity.ok(chatRoomService.findRoom(chat_room_id, userUtil.getLoggedInUser()));
-        }  catch (NotLoggedInException | ExitedUserException | ChatRoomException e) {
+        }  catch (ExitedUserException | ChatRoomException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(exceptionResponse);

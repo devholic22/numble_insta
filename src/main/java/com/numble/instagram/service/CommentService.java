@@ -26,10 +26,6 @@ public class CommentService {
 
     public Comment write(CommentDto commentDto, User writer) {
 
-        if (writer == null) {
-            throw new NotLoggedInException("로그인되지 않았습니다.");
-        }
-
         if (!writer.isActivated()) {
             throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");
         }
@@ -52,10 +48,6 @@ public class CommentService {
 
     public Comment edit(EditCommentDto editCommentDto, Long id, User writer) {
 
-        if (writer == null) {
-            throw new NotLoggedInException("로그인되지 않았습니다.");
-        }
-
         if (!writer.isActivated()) {
             throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");
         }
@@ -77,10 +69,6 @@ public class CommentService {
     }
 
     public void delete(Long id, User writer) {
-
-        if (writer == null) {
-            throw new NotLoggedInException("로그인되지 않았습니다.");
-        }
 
         if (!writer.isActivated()) {
             throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");

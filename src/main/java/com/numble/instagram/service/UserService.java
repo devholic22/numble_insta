@@ -12,15 +12,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collections;
 
 @Service
@@ -29,16 +26,14 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final FollowRepository followRepository;
 
 
     public UserService(UserRepository userRepository,
-                       TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder,
+                       TokenProvider tokenProvider,
                        FollowRepository followRepository) {
         this.userRepository = userRepository;
         this.tokenProvider = tokenProvider;
-        this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.followRepository = followRepository;
     }
 
@@ -78,10 +73,6 @@ public class UserService {
 
     public User edit(EditUserDto editUserDto, User loggedInUser) {
 
-        if (loggedInUser == null) {
-            throw new NotLoggedInException("로그인되지 않았습니다.");
-        }
-
         if (!loggedInUser.isActivated()) {
             throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");
         }
@@ -112,10 +103,6 @@ public class UserService {
     }
 
     public void delete(User loggedInUser) {
-
-        if (loggedInUser == null) {
-            throw new NotLoggedInException("로그인되지 않았습니다.");
-        }
 
         if (!loggedInUser.isActivated()) {
             throw new AlreadyExitedUserException("이미 탈퇴한 유저입니다.");

@@ -22,10 +22,6 @@ public class FollowService {
 
     public void addFollow(Long userId, User sender) {
 
-        if (sender == null) {
-            throw new NotLoggedInException("로그인되지 않았습니다.");
-        }
-
         if (!sender.isActivated()) {
             throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");
         }
@@ -54,10 +50,6 @@ public class FollowService {
     }
 
     public void cancelFollow(Long userId, User sender) {
-
-        if (sender == null) {
-            throw new NotLoggedInException("로그인되지 않았습니다.");
-        }
 
         if (!sender.isActivated()) {
             throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");

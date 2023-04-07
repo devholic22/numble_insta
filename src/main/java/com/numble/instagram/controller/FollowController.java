@@ -24,8 +24,7 @@ public class FollowController {
         try {
             followService.addFollow(user_id, userUtil.getLoggedInUser());
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (NotLoggedInException |
-                 ExitedUserException |
+        } catch (ExitedUserException |
                  SelfFollowAPIException |
                  NotSearchedTargetException |
                  ExitedTargetUserException |
@@ -41,8 +40,7 @@ public class FollowController {
         try {
             followService.cancelFollow(user_id, userUtil.getLoggedInUser());
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (NotLoggedInException |
-                 ExitedUserException |
+        } catch (ExitedUserException |
                  SelfFollowAPIException |
                  NotSearchedTargetException |
                  NotFollowException e) {

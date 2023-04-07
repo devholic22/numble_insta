@@ -20,10 +20,6 @@ public class PostService {
 
     public Post write(PostDto postDto, User writer) {
 
-        if (writer == null) {
-            throw new NotLoggedInException("로그인되지 않았습니다.");
-        }
-
         if (!writer.isActivated()) {
             throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");
         }
@@ -42,10 +38,6 @@ public class PostService {
     }
 
     public Post edit(Long id, PostDto postDto, User writer) {
-
-        if (writer == null) {
-            throw new NotLoggedInException("로그인되지 않았습니다.");
-        }
 
         if (!writer.isActivated()) {
             throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");
@@ -69,10 +61,6 @@ public class PostService {
     }
 
     public void delete(Long id, User writer) {
-
-        if (writer == null) {
-            throw new NotLoggedInException("로그인되지 않았습니다.");
-        }
 
         if (!writer.isActivated()) {
             throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");

@@ -30,10 +30,6 @@ public class MessageService {
 
     public void send(MessageDto messageDto, User sender) {
 
-        if (sender == null) {
-            throw new NotLoggedInException("로그인되지 않았습니다.");
-        }
-
         if (!sender.isActivated()) {
             throw new ExitedUserException("탈퇴했기에 권한이 없습니다.");
         }

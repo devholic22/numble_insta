@@ -1,7 +1,6 @@
 package com.numble.instagram.config;
 
 import com.numble.instagram.jwt.*;
-import com.numble.instagram.repository.UserRepository;
 import com.numble.instagram.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,17 +24,12 @@ public class SecurityConfig {
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private final UserRepository userRepository;
 
-    private final JwtFilter jwtFilter;
-
-    public SecurityConfig(TokenProvider tokenProvider, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtAccessDeniedHandler jwtAccessDeniedHandler,
-                          UserRepository userRepository, JwtFilter jwtFilter) {
+    public SecurityConfig(TokenProvider tokenProvider, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+                          JwtAccessDeniedHandler jwtAccessDeniedHandler) {
         this.tokenProvider = tokenProvider;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
-        this.userRepository = userRepository;
-        this.jwtFilter = jwtFilter;
     }
 
     @Bean
@@ -63,15 +57,9 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/").permitAll()
-                .requestMatchers("/**").permitAll()
                 .requestMatchers("/signup").permitAll()
                 .requestMatchers("/login").permitAll()
-                .requestMatchers("/profile").hasRole("USER")
-                .requestMatchers("/post").hasRole("USER")
-                .requestMatchers("/comment").hasRole("USER")
-                .requestMatchers("/reply").hasRole("USER")
-                .requestMatchers("/user/{username}").hasRole("ADMIN")
+                .requestMatchers("/profile/{user_id}").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtSecurityConfig(tokenProvider));

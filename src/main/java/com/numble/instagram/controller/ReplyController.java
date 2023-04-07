@@ -26,8 +26,7 @@ public class ReplyController {
     public ResponseEntity<?> write(@RequestBody ReplyDto replyDto) {
         try {
             return ResponseEntity.ok(replyService.write(replyDto, userUtil.getLoggedInUser()));
-        } catch (NotLoggedInException |
-                 ExitedUserException |
+        } catch (ExitedUserException |
                  NotQualifiedDtoException |
                  NotSearchedTargetException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
@@ -40,8 +39,7 @@ public class ReplyController {
     public ResponseEntity<?> edit(@RequestBody EditReplyDto editReplyDto, @PathVariable Long id) {
         try {
             return ResponseEntity.ok(replyService.edit(editReplyDto, id, userUtil.getLoggedInUser()));
-        } catch (NotLoggedInException |
-                 ExitedUserException |
+        } catch (ExitedUserException |
                  NotQualifiedDtoException |
                  NotSearchedTargetException |
                  NotPermissionException e) {
@@ -56,8 +54,7 @@ public class ReplyController {
         try {
             replyService.delete(id, userUtil.getLoggedInUser());
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (NotLoggedInException |
-                 ExitedUserException |
+        } catch (ExitedUserException |
                  NotSearchedTargetException |
                  NotPermissionException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());

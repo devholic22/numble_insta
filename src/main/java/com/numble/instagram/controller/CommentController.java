@@ -25,8 +25,7 @@ public class CommentController {
     public ResponseEntity<?> addComment(@RequestBody CommentDto commentDto) {
         try {
             return ResponseEntity.ok(commentService.write(commentDto, userUtil.getLoggedInUser()));
-        } catch (NotLoggedInException |
-                 ExitedUserException |
+        } catch (ExitedUserException |
                  NotSearchedTargetException |
                  NotQualifiedDtoException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
@@ -39,8 +38,7 @@ public class CommentController {
     public ResponseEntity<?> editComment(@RequestBody EditCommentDto editCommentDto, @PathVariable Long id) {
         try {
             return ResponseEntity.ok(commentService.edit(editCommentDto, id, userUtil.getLoggedInUser()));
-        } catch (NotLoggedInException |
-                 ExitedUserException |
+        } catch (ExitedUserException |
                  NotQualifiedDtoException |
                  NotSearchedTargetException |
                  NotPermissionException e) {
@@ -54,8 +52,7 @@ public class CommentController {
     public ResponseEntity<?> deleteComment(@PathVariable Long id) {
         try {
             commentService.delete(id, userUtil.getLoggedInUser());
-        } catch (NotLoggedInException |
-                 ExitedUserException |
+        } catch (ExitedUserException |
                  NotSearchedTargetException |
                  NotPermissionException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
