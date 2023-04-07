@@ -52,10 +52,9 @@ jobs: # 이벤트가 발생했을 때 독립된 환경에서 실행되어야 하
           cd deploy && zip -r deploy.zip .
       - name: Update Elastic Beanstalk environment
         run: |
-          aws elasticbeanstalk update-environment-version \
-            --application-name numble-instagram \
-            --environment-name Numbleinstagram-env \
-            --version-label "github-action-${{ steps.current-time.outputs.formattedTime }}"
+          aws elasticbeanstalk update-environment \
+          --environment-name Numbleinstagram-env \
+          --version-label "github-action-${{ steps.current-time.outputs.formattedTime }}"
       - name: Beanstalk Deploy
         uses: einaregilsson/beanstalk-deploy@v21
         with:
