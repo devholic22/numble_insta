@@ -3,9 +3,7 @@ package com.numble.instagram.controller;
 import com.numble.instagram.dto.post.PostDto;
 import com.numble.instagram.entity.Post;
 import com.numble.instagram.entity.User;
-import com.numble.instagram.exception.ExceptionResponse;
-import com.numble.instagram.exception.NotLoggedInException;
-import com.numble.instagram.exception.NotQualifiedDtoException;
+import com.numble.instagram.exception.*;
 import com.numble.instagram.repository.PostRepository;
 import com.numble.instagram.repository.UserRepository;
 import com.numble.instagram.service.PostService;
@@ -52,22 +50,14 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> edit(@RequestBody PostDto postDto, @PathVariable Long id) {
-        User loggedUser = getLoggedInUser();
-        Optional<Post> targetPost = postRepository.findById(id);
-        if (targetPost.isEmpty()) {
-            ExceptionResponse exceptionResponse = new ExceptionResponse("해당 글이 없습니다.");
+    public ResponseEntity<?> edit(@ModelAttribute PostDto postDto, @PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(postService.edit(id, postDto, userUtil.getLoggedInUser()));
+        } catch (NotLoggedInException | NotSearchedTargetException | NotPermissionException | NotQualifiedDtoException e) {
+            ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(exceptionResponse);
         }
-        Post target = targetPost.get();
-        User writer = target.getWriter();
-        if (!writer.equals(loggedUser)) {
-            ExceptionResponse exceptionResponse = new ExceptionResponse("글을 수정할 수 없습니다.");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(exceptionResponse);
-        }
-        return ResponseEntity.ok(postService.edit(target, postDto));
     }
 
     @DeleteMapping("/{id}")
