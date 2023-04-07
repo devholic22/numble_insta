@@ -5,9 +5,13 @@ import com.numble.instagram.dto.comment.DeleteCommentDto;
 import com.numble.instagram.dto.comment.EditCommentDto;
 import com.numble.instagram.entity.User;
 import com.numble.instagram.exception.ExceptionResponse;
+import com.numble.instagram.exception.NotLoggedInException;
+import com.numble.instagram.exception.NotQualifiedDtoException;
+import com.numble.instagram.exception.NotSearchedTargetException;
 import com.numble.instagram.repository.CommentRepository;
 import com.numble.instagram.repository.UserRepository;
 import com.numble.instagram.service.CommentService;
+import com.numble.instagram.util.UserUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,21 +24,19 @@ public class CommentController {
 
     private final CommentService commentService;
     private final UserRepository userRepository;
-    private final CommentRepository commentRepository;
+    private final UserUtil userUtil;
 
-    public CommentController(CommentService commentService, UserRepository userRepository,
-                             CommentRepository commentRepository) {
+    public CommentController(CommentService commentService, UserRepository userRepository, UserUtil userUtil) {
         this.commentService = commentService;
         this.userRepository = userRepository;
-        this.commentRepository = commentRepository;
+        this.userUtil = userUtil;
     }
 
     @PostMapping
     public ResponseEntity<?> addComment(@RequestBody CommentDto commentDto) {
-        User loggedInUser = getLoggedInUser();
         try {
-            return ResponseEntity.ok(commentService.write(commentDto, loggedInUser));
-        } catch (RuntimeException e) {
+            return ResponseEntity.ok(commentService.write(commentDto, userUtil.getLoggedInUser()));
+        } catch (NotLoggedInException | NotSearchedTargetException | NotQualifiedDtoException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(exceptionResponse);

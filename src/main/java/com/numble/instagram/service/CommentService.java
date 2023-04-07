@@ -5,6 +5,9 @@ import com.numble.instagram.dto.comment.EditCommentDto;
 import com.numble.instagram.entity.Comment;
 import com.numble.instagram.entity.Post;
 import com.numble.instagram.entity.User;
+import com.numble.instagram.exception.NotLoggedInException;
+import com.numble.instagram.exception.NotQualifiedDtoException;
+import com.numble.instagram.exception.NotSearchedTargetException;
 import com.numble.instagram.repository.CommentRepository;
 import com.numble.instagram.repository.PostRepository;
 import org.springframework.stereotype.Service;
@@ -25,16 +28,25 @@ public class CommentService {
         this.postRepository = postRepository;
     }
 
-    public Comment write(CommentDto commentDto, User loggedInUser) {
-        Optional<Post> targetPost = postRepository.findById(commentDto.getPost_id());
-        if (targetPost.isEmpty()) {
-            throw new RuntimeException("해당 글이 없습니다.");
+    public Comment write(CommentDto commentDto, User writer) {
+
+        if (writer == null) {
+            throw new NotLoggedInException("로그인되지 않았습니다.");
         }
+
+        Post targetPost = postRepository.findById(commentDto.getPost_id()).orElseThrow(
+                () -> new NotSearchedTargetException("해당 글이 없습니다."));
+
+        if (commentDto.getPost_id() == null || commentDto.getContent() == null) {
+            throw new NotQualifiedDtoException("post_id 또는 content가 비었습니다.");
+        }
+
         Comment newComment = Comment.builder()
-                .post(targetPost.get())
-                .writer(loggedInUser)
+                .post(targetPost)
+                .writer(writer)
                 .content(commentDto.getContent())
                 .build();
+
         return commentRepository.save(newComment);
     }
 
