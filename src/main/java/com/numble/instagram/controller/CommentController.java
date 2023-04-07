@@ -4,10 +4,7 @@ import com.numble.instagram.dto.comment.CommentDto;
 import com.numble.instagram.dto.comment.DeleteCommentDto;
 import com.numble.instagram.dto.comment.EditCommentDto;
 import com.numble.instagram.entity.User;
-import com.numble.instagram.exception.ExceptionResponse;
-import com.numble.instagram.exception.NotLoggedInException;
-import com.numble.instagram.exception.NotQualifiedDtoException;
-import com.numble.instagram.exception.NotSearchedTargetException;
+import com.numble.instagram.exception.*;
 import com.numble.instagram.repository.CommentRepository;
 import com.numble.instagram.repository.UserRepository;
 import com.numble.instagram.service.CommentService;
@@ -45,10 +42,10 @@ public class CommentController {
 
     @PutMapping
     public ResponseEntity<?> editComment(@RequestBody EditCommentDto editCommentDto) {
-        User loggedInUser = getLoggedInUser();
         try {
-            return ResponseEntity.ok(commentService.edit(editCommentDto, loggedInUser));
-        } catch (RuntimeException e) {
+            return ResponseEntity.ok(commentService.edit(editCommentDto, userUtil.getLoggedInUser()));
+        } catch (NotLoggedInException | NotQualifiedDtoException | NotSearchedTargetException
+                 | NotPermissionException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(exceptionResponse);

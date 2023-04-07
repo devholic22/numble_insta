@@ -6,6 +6,7 @@ import com.numble.instagram.entity.Comment;
 import com.numble.instagram.entity.Post;
 import com.numble.instagram.entity.User;
 import com.numble.instagram.exception.NotLoggedInException;
+import com.numble.instagram.exception.NotPermissionException;
 import com.numble.instagram.exception.NotQualifiedDtoException;
 import com.numble.instagram.exception.NotSearchedTargetException;
 import com.numble.instagram.repository.CommentRepository;
@@ -50,17 +51,26 @@ public class CommentService {
         return commentRepository.save(newComment);
     }
 
-    public Comment edit(EditCommentDto editCommentDto, User loggedInUser) {
-        Optional<Comment> targetComment = commentRepository.findById(editCommentDto.getId());
-        if (targetComment.isEmpty()) {
-            throw new RuntimeException("해당 댓글이 없습니다.");
+    public Comment edit(EditCommentDto editCommentDto, User writer) {
+
+        if (writer == null) {
+            throw new NotLoggedInException("로그인되지 않았습니다.");
         }
-        User writer = targetComment.get().getWriter();
-        if (!writer.equals(loggedInUser)) {
-            throw new RuntimeException("수정할 수 없습니다.");
+
+        if (editCommentDto.getId() == null || editCommentDto.getContent() == null) {
+            throw new NotQualifiedDtoException("id 또는 content가 비었습니다.");
         }
-        targetComment.get().setContent(editCommentDto.getContent());
-        return targetComment.get();
+
+        Comment targetComment = commentRepository.findById(editCommentDto.getId())
+                .orElseThrow(() -> new NotSearchedTargetException("해당 댓글이 없습니다."));
+
+        if (!writer.equals(targetComment.getWriter())) {
+            throw new NotPermissionException("댓글을 수정할 수 없습니다.");
+        }
+
+        targetComment.setContent(editCommentDto.getContent());
+
+        return targetComment;
     }
 
     public void delete(Long commentId, User loggedInUser) {
