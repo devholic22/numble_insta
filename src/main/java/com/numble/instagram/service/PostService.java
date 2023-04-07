@@ -65,7 +65,19 @@ public class PostService {
         return targetPost;
     }
 
-    public void delete(Long postId) {
-        postRepository.deleteById(postId);
+    public void delete(Long id, User writer) {
+
+        if (writer == null) {
+            throw new NotLoggedInException("로그인되지 않았습니다.");
+        }
+
+        Post targetPost = postRepository.findById(id).orElseThrow(
+                () -> new NotSearchedTargetException("해당 글이 없습니다."));
+
+        if (!writer.equals(targetPost.getWriter())) {
+            throw new NotPermissionException("글을 삭제할 수 없습니다.");
+        }
+
+        postRepository.deleteById(id);
     }
 }

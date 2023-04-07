@@ -62,27 +62,13 @@ public class PostController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        User loggedUser = getLoggedInUser();
-        Optional<Post> targetPost = postRepository.findById(id);
-        if (targetPost.isEmpty()) {
-            ExceptionResponse exceptionResponse = new ExceptionResponse("해당 글이 없습니다.");
+        try {
+            postService.delete(id, userUtil.getLoggedInUser());
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (NotLoggedInException | NotSearchedTargetException | NotPermissionException e) {
+            ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(exceptionResponse);
         }
-        Post target = targetPost.get();
-        User writer = target.getWriter();
-        if (!writer.equals(loggedUser)) {
-            ExceptionResponse exceptionResponse = new ExceptionResponse("글을 삭제할 수 없습니다.");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(exceptionResponse);
-        }
-        postService.delete(target.getId());
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    public User getLoggedInUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String nickname = authentication.getName();
-        return userRepository.findByNickname(nickname);
     }
 }
