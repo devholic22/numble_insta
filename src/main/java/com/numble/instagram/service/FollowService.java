@@ -1,16 +1,12 @@
 package com.numble.instagram.service;
 
-import com.numble.instagram.dto.follow.FollowDto;
 import com.numble.instagram.entity.Follow;
 import com.numble.instagram.entity.User;
+import com.numble.instagram.exception.*;
 import com.numble.instagram.repository.FollowRepository;
 import com.numble.instagram.repository.UserRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -24,44 +20,50 @@ public class FollowService {
         this.userRepository = userRepository;
     }
 
-    public void addFollow(FollowDto followDto) {
-        User sender = getLoggedInUser();
-        if (sender.getId() == followDto.getUser_id()) {
-            throw new RuntimeException("자기 자신과는 팔로우 API가 이뤄질 수 없습니다.");
+    public void addFollow(Long userId, User sender) {
+
+        if (sender == null) {
+            throw new NotLoggedInException("로그인되지 않았습니다.");
         }
-        Optional<User> receiver = userRepository.findById(followDto.getUser_id());
-        if (receiver.isEmpty()) {
-            throw new RuntimeException("사용자가 없습니다.");
+
+        if (sender.getId().equals(userId)) {
+            throw new SelfFollowAPIException("자기 자신과는 팔로우 API가 이뤄질 수 없습니다.");
         }
-        if (followRepository.findBySender_IdAndReceiver_Id(sender.getId(), receiver.get().getId()) != null) {
-            throw new RuntimeException("이미 팔로우가 맺어져 있습니다.");
+
+        User receiver = userRepository.findById(userId)
+                .orElseThrow(() -> new NotSearchedTargetException("사용자가 없습니다."));
+
+        if (followRepository.findBySender_IdAndReceiver_Id(sender.getId(), receiver.getId()) != null) {
+            throw new AlreadyFollowException("이미 팔로우가 맺어져 있습니다.");
         }
+
         Follow newFollow = Follow.builder()
                 .sender(sender)
-                .receiver(receiver.get())
+                .receiver(receiver)
                 .build();
+
         followRepository.save(newFollow);
     }
 
-    public void cancelFollow(FollowDto followDto) {
-        User sender = getLoggedInUser();
-        if (sender.getId() == followDto.getUser_id()) {
-            throw new RuntimeException("자기 자신과는 팔로우 API가 이뤄질 수 없습니다.");
-        }
-        Optional<User> receiver = userRepository.findById(followDto.getUser_id());
-        if (receiver.isEmpty()) {
-            throw new RuntimeException("사용자가 없습니다.");
-        }
-        Follow isExistFollow = followRepository.findBySender_IdAndReceiver_Id(sender.getId(), receiver.get().getId());
-        if (isExistFollow == null) {
-            throw new RuntimeException("팔로우 관계가 맺어지지 않은 관계입니다.");
-        }
-        followRepository.deleteBySender_IdAndReceiver_Id(sender.getId(), receiver.get().getId());
-    }
+    public void cancelFollow(Long userId, User sender) {
 
-    public User getLoggedInUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String nickname = authentication.getName();
-        return userRepository.findByNickname(nickname);
+        if (sender == null) {
+            throw new NotLoggedInException("로그인되지 않았습니다.");
+        }
+
+        if (sender.getId().equals(userId)) {
+            throw new SelfFollowAPIException("자기 자신과는 팔로우 API가 이뤄질 수 없습니다.");
+        }
+
+        User receiver = userRepository.findById(userId)
+                .orElseThrow(() -> new NotSearchedTargetException("사용자가 없습니다."));
+
+        Follow isExistFollow = followRepository.findBySender_IdAndReceiver_Id(sender.getId(), receiver.getId());
+
+        if (isExistFollow == null) {
+            throw new NotFollowException("팔로우 관계가 맺어지지 않은 관계입니다.");
+        }
+
+        followRepository.deleteBySender_IdAndReceiver_Id(sender.getId(), receiver.getId());
     }
 }
