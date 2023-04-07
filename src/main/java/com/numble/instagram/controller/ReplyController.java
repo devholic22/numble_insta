@@ -4,10 +4,7 @@ import com.numble.instagram.dto.reply.DeleteReplyDto;
 import com.numble.instagram.dto.reply.EditReplyDto;
 import com.numble.instagram.dto.reply.ReplyDto;
 import com.numble.instagram.entity.User;
-import com.numble.instagram.exception.ExceptionResponse;
-import com.numble.instagram.exception.NotLoggedInException;
-import com.numble.instagram.exception.NotQualifiedDtoException;
-import com.numble.instagram.exception.NotSearchedTargetException;
+import com.numble.instagram.exception.*;
 import com.numble.instagram.repository.UserRepository;
 import com.numble.instagram.service.ReplyService;
 import com.numble.instagram.util.UserUtil;
@@ -42,12 +39,14 @@ public class ReplyController {
         }
     }
 
-    @PutMapping
-    public ResponseEntity<?> edit(@RequestBody EditReplyDto editReplyDto) {
-        User loggedInUser = getLoggedInUser();
+    @PutMapping("/{id}")
+    public ResponseEntity<?> edit(@RequestBody EditReplyDto editReplyDto, @PathVariable Long id) {
         try {
-            return ResponseEntity.ok(replyService.edit(editReplyDto, loggedInUser));
-        } catch (RuntimeException e) {
+            return ResponseEntity.ok(replyService.edit(editReplyDto, id, userUtil.getLoggedInUser()));
+        } catch (NotLoggedInException |
+                NotQualifiedDtoException | 
+                NotSearchedTargetException |
+                 NotPermissionException e) {
             ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(exceptionResponse);

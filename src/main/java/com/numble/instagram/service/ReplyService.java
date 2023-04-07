@@ -7,6 +7,7 @@ import com.numble.instagram.entity.Comment;
 import com.numble.instagram.entity.Reply;
 import com.numble.instagram.entity.User;
 import com.numble.instagram.exception.NotLoggedInException;
+import com.numble.instagram.exception.NotPermissionException;
 import com.numble.instagram.exception.NotQualifiedDtoException;
 import com.numble.instagram.exception.NotSearchedTargetException;
 import com.numble.instagram.repository.CommentRepository;
@@ -51,16 +52,26 @@ public class ReplyService {
         return replyRepository.save(newReply);
     }
 
-    public Reply edit(EditReplyDto editReplyDto, User loggedInUser) {
-        Optional<Reply> targetReply = replyRepository.findById(editReplyDto.getId());
-        if (targetReply.isEmpty()) {
-            throw new RuntimeException("해당 댓글이 없습니다.");
+    public Reply edit(EditReplyDto editReplyDto, Long id, User writer) {
+
+        if (writer == null) {
+            throw new NotLoggedInException("로그인되지 않았습니다.");
         }
-        if (!targetReply.get().getWriter().equals(loggedInUser)) {
-            throw new RuntimeException("수정할 수 없습니다.");
+
+        if (editReplyDto.getContent() == null) {
+            throw new NotQualifiedDtoException("content가 비어있습니다.");
         }
-        targetReply.get().setContent(editReplyDto.getContent());
-        return targetReply.get();
+
+        Reply targetReply = replyRepository.findById(id)
+                .orElseThrow(() -> new NotSearchedTargetException("해당 답글이 없습니다."));
+
+        if (!targetReply.getWriter().equals(writer)) {
+            throw new NotPermissionException("답글을 수정할 수 없습니다.");
+        }
+
+        targetReply.setContent(editReplyDto.getContent());
+
+        return targetReply;
     }
 
     public void delete(DeleteReplyDto deleteReplyDto, User loggedInUser) {
