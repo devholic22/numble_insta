@@ -60,3 +60,5 @@ jobs: # 이벤트가 발생했을 때 독립된 환경에서 실행되어야 하
           version_label: github-action-${{steps.current-time.outputs.formattedTime}}
           region: ap-northeast-2
           deployment_package: deploy/deploy.zip
+        env:
+          APPLICATION_VERSION: github-action-${{steps.current-time.outputs.formattedTime}}
