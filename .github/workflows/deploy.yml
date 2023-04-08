@@ -58,6 +58,7 @@ jobs: # 이벤트가 발생했을 때 독립된 환경에서 실행되어야 하
           application_name: numble
           environment_name: Numble-env
           # version_label: github-action-${{steps.current-time.outputs.formattedTime}}
-          version_label: Sample Application
+          version_label: "Sample Application"
+          use_existing_version_if_available: true
           region: ap-northeast-2
           deployment_package: deploy/deploy.zip
