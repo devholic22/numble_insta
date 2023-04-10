@@ -1,5 +1,7 @@
 # numble_insta
-2023-03 넘블 인스타그램 서버 API 프로젝트
+## 2023-03 넘블 인스타그램 서버 API 프로젝트
+<img src="https://user-images.githubusercontent.com/90085154/230849243-0284701a-7cf3-4586-9d30-e18d22d9fddc.png">
+
 순서 | 목차 
 | --- | ---
 | 0 | 작업 기간
@@ -13,6 +15,8 @@
 23.03.24 ~ 23.04.13
 ## 아키텍처 구조
 ## DB 스키마 & ERD
+<img src="https://user-images.githubusercontent.com/90085154/230851149-920d280d-1bd1-4fe5-8883-0837c5a45a9f.png">
+
 ## API 문서
 ## 회고록 & 기타 기록
 [velog Numble 시리즈 글](https://velog.io/@devholic22/series/%EB%84%98%EB%B8%94%EC%B1%8C%EB%A6%B0%EC%A7%80)
