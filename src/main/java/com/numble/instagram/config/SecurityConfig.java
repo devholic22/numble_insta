@@ -58,6 +58,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/hello").permitAll()
+                .requestMatchers("/actuator/health").permitAll()
                 .requestMatchers("/signup").permitAll()
                 .requestMatchers("/login").permitAll()
                 .requestMatchers("/profile/{user_id}").permitAll()
