@@ -14,4 +14,9 @@ public class HomeController {
 
         return ResponseEntity.ok("Hello");
     }
+
+    @GetMapping("/actuator/health")
+    public String health() {
+        return "health";
+    }
 }
