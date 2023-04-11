@@ -56,8 +56,8 @@ jobs: # 이벤트가 발생했을 때 독립된 환경에서 실행되어야 하
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: numble
-          environment_name: Numble-env
+          application_name: instagram
+          environment_name: Instagram-env
           version_label: github-action-${{steps.current-time.outputs.formattedTime}}
           region: ap-northeast-2
           deployment_package: deploy/deploy.zip
