@@ -37,8 +37,14 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> authorize(@RequestBody LoginDto loginDto) {
-        return userService.login(loginDto);
+    public ResponseEntity<?> authorize(@RequestBody LoginDto loginDto) {
+        try {
+            return userService.login(loginDto);
+        } catch (LoginExceptionResponse e) {
+            ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(exceptionResponse);
+        }
     }
 
     @GetMapping("/profile/{user_id}")

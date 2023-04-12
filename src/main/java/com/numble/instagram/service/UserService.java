@@ -63,6 +63,11 @@ public class UserService {
         Authentication authentication = new UsernamePasswordAuthenticationToken(loginDto.getNickname(),null, Collections.singleton(simpleGrantedAuthority));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         User user = userRepository.findByNickname(loginDto.getNickname());
+
+        if (user == null) {
+            throw new LoginExceptionResponse("없는 유저입니다.");
+        }
+
         String jwt = tokenProvider.createToken(authentication, user);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
@@ -109,7 +114,5 @@ public class UserService {
         }
 
         loggedInUser.setActivated(false);
-        loggedInUser.setProfile_image("default_image.png");
-        loggedInUser.setNickname("deleted_user");
     }
 }
