@@ -134,6 +134,7 @@
     │   │               │   ├── 📜 ChatRoomException
     │   │               │   ├── 📜 ExitedTargetUserException
     │   │               │   ├── 📜 ExitedUserException
+    │   │               │   ├── 📜 LoginExceptionResponse
     │   │               │   ├── 📜 NotFollowException
     │   │               │   ├── 📜 NotPermissionException
     │   │               │   ├── 📜 NotQualifiedDtoException
