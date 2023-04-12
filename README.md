@@ -14,6 +14,8 @@
 ## 작업 기간
 23.03.24 ~ 23.04.13
 ## 아키텍처 구조
+<img src="https://user-images.githubusercontent.com/90085154/231455169-1a67ba16-cde0-4691-87ac-4c4aa6019722.png">
+
 ## DB 스키마 & ERD
 <img src="https://user-images.githubusercontent.com/90085154/230851149-920d280d-1bd1-4fe5-8883-0837c5a45a9f.png">
 
