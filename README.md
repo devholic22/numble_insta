@@ -6,21 +6,34 @@
 | --- | ---
 | 0 | 작업 기간
 | 1 | 아키텍처 구조
-| 2 | DB 스키마 & ERD
-| 3 | API 문서
-| 4 | 회고록 & 기타 기록
-| 5 | 사용 기술
-| 6 | 폴더 구조
+| 2 | 앱 적용 예시
+| 3 | DB 스키마 & ERD
+| 4 | API 문서
+| 5 | 가이드라인
+| 6 | 회고록 & 기타 기록
+| 7 | 사용 기술
+| 8 | 폴더 구조
 ## 작업 기간
 23.03.24 ~ 23.04.13
 ## 아키텍처 구조
 <img src="https://user-images.githubusercontent.com/90085154/231455169-1a67ba16-cde0-4691-87ac-4c4aa6019722.png">
+
+* CI / CD 과정에서 프로젝트 배포까지는 완료했으나, 배포한 파일에서 계속 `Target.FailedHealthChecks` 오류가 발생하는 문제는 해결하지 못했다.
+<img src="https://user-images.githubusercontent.com/90085154/231466102-9d891d25-639b-4ebd-b8ae-2ff30783f321.png">
+<img src="https://user-images.githubusercontent.com/90085154/231466112-f856fd8e-f2f1-44fe-987c-11725630f185.png">
+
+## 앱 적용 예시
+<img src="https://user-images.githubusercontent.com/90085154/231465617-a3f0fb31-6b13-4b8d-8dc9-c0fd2b67570f.png">
 
 ## DB 스키마 & ERD
 <img src="https://user-images.githubusercontent.com/90085154/230851149-920d280d-1bd1-4fe5-8883-0837c5a45a9f.png">
 
 ## API 문서
 [API 문서 (노션)](https://southern-tiglon-56a.notion.site/API-cf9c1b2f823f4acd86c45ad9706a9b4d)
+
+## 가이드라인
+[가이드라인](https://thoughtful-arch-8c2.notion.site/Spring-c83f01ab221a4166a2713120728aa552)
+
 ## 회고록 & 기타 기록
 [velog Numble 시리즈 글](https://velog.io/@devholic22/series/%EB%84%98%EB%B8%94%EC%B1%8C%EB%A6%B0%EC%A7%80)
 ## 사용 기술
@@ -37,6 +50,7 @@
 * AWS Elastic beanstalk
 * AWS EC2
 * AWS RDS
+
 ## 폴더 구조
 ```bash
 📂 instagram
