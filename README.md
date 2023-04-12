@@ -18,6 +18,7 @@
 <img src="https://user-images.githubusercontent.com/90085154/230851149-920d280d-1bd1-4fe5-8883-0837c5a45a9f.png">
 
 ## API 문서
+[API 문서 (노션)](https://southern-tiglon-56a.notion.site/API-cf9c1b2f823f4acd86c45ad9706a9b4d)
 ## 회고록 & 기타 기록
 [velog Numble 시리즈 글](https://velog.io/@devholic22/series/%EB%84%98%EB%B8%94%EC%B1%8C%EB%A6%B0%EC%A7%80)
 ## 사용 기술
