@@ -51,6 +51,9 @@
 * AWS EC2
 * AWS RDS
 
+## 수료증
+![KakaoTalk_Photo_2023-05-03-14-35-30](https://user-images.githubusercontent.com/90085154/235856850-489b07a3-fe3a-4f13-84c3-514523d690d6.jpeg)
+
 ## 폴더 구조
 ```bash
 📂 instagram
